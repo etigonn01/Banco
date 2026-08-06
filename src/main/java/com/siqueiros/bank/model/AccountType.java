@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "account_types")
-public class AccountTypes {
+public class AccountType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -12,7 +12,7 @@ public class AccountTypes {
     @Column(name = "name", nullable = false, unique = true, length = 30)
     private String type;
 
-    public AccountTypes() {}
+    public AccountType() {}
 
     public Long getId() {
         return id;

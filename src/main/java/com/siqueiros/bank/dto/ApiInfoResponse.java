@@ -1,4 +1,6 @@
 package com.siqueiros.bank.dto;
 
-public record ApiInfoResponse() {
+import java.util.List;
+
+public record ApiInfoResponse(String greeting, String version, String author, List<String> technologies) {
 }

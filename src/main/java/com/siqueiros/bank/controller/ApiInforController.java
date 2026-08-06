@@ -1,20 +1,26 @@
 package com.siqueiros.bank.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import com.siqueiros.bank.dto.ApiInfoResponse;
 
 @RestController
-@RequestMapping("/api/v1/greeting")
-public class GreetingController {
+@RequestMapping("/api/v1/info")
+public class ApiInforController {
     @GetMapping()
-    public List<String> getGreeting() {
+    public ResponseEntity<ApiInfoResponse> getInfo() {
+        String greeting = "Welcome to my Bank API";
+        String version = "1.0.0";
+        String author = "Pedro Siqueiros";
+        List<String> technologies = List.of("Java SE 21", "PostgreSQL 15", "Spring Boot");
 
-        return "Welcome to my Bank API" +
-                "\nVersion: 1.0.0" +
-                "\nAuthor: Pedro Siqueiros" +
-                "\nTechnologies: " +
-                "\n\tSpring Boot" +
-                "\n\tPostgreSQL" +
-                "\n\tJava SE 21";
+        ApiInfoResponse response = new ApiInfoResponse(
+                greeting,
+                version,
+                author,
+                technologies
+        );
+        return ResponseEntity.ok(response);
     }
 }

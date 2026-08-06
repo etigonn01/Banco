@@ -3,7 +3,7 @@ package com.siqueiros.bank.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "operation_type")
+@Table(name = "operation_types")
 public class OperationType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

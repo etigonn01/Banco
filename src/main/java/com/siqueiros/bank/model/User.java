@@ -22,7 +22,7 @@ public class User {
     @Column(name = "phone_number", nullable = false, unique = true, length = 10)
     private String phoneNumber;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     public User() {}

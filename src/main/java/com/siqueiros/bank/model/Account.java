@@ -24,6 +24,8 @@ public class Account {
     @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
+    public Account() {}
+
     public Long getId() {
         return id;
     }

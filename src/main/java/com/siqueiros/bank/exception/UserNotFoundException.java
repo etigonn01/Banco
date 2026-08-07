@@ -1,4 +1,7 @@
 package com.siqueiros.bank.exception;
 
-public class UserNotFoundException {
+public class UserNotFoundException extends RuntimeException{
+    public UserNotFoundException(String message) {
+        super(message);
+    }
 }

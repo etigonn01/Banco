@@ -22,10 +22,18 @@ public class User {
     @Column(name = "phone_number", nullable = false, unique = true, length = 10)
     private String phoneNumber;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public User() {}
+
+    public User(String fullname, String email, String passwordHash, String phoneNumber) {
+        this.fullname = fullname;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.phoneNumber = phoneNumber;
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;

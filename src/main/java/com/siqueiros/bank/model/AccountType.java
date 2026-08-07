@@ -9,7 +9,7 @@ public class AccountType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 30)
+    @Column(name = "type", nullable = false, unique = true, length = 30)
     private String type;
 
     public AccountType() {}

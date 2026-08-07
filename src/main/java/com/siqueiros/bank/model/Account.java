@@ -12,7 +12,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "balance", columnDefinition = "NUMERIC(12,2) DEFAULT 0.00")
+    @Column(name = "balance", columnDefinition = "NUMERIC(12,2)")
     private BigDecimal balance;
 
     @Column(name = "type_id", nullable = false)

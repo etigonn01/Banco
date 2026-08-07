@@ -1,4 +1,12 @@
 package com.siqueiros.bank.dto;
 
-public record ErrorResponseDTO() {
+import java.time.LocalDateTime;
+
+public record ErrorResponseDTO(
+        String path,
+        int status,
+        String error,
+        String message,
+        LocalDateTime timestamp
+) {
 }

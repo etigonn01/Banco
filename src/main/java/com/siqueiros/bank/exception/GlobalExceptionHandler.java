@@ -25,6 +25,45 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccountNotFound(AccountNotFoundException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TypeOperationNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTypeOperationNotFound(TypeOperationNotFoundException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInsufficientFunds(InsufficientFundsException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolation(
             DataIntegrityViolationException ex, WebRequest request

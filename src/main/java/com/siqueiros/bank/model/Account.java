@@ -13,55 +13,55 @@ public class Account {
     private Long id;
 
     @Column(name = "balance", columnDefinition = "NUMERIC(12,2)")
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
-    @Column(name = "type_id", nullable = false)
-    private Long typeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_operation_id", nullable = false)
+    private AccountType accountType;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
     public Account() {}
 
+    public Account(BigDecimal balance,  AccountType accountType, User user) {
+        this.balance = balance;
+        this.accountType = accountType;
+        this.user = user;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public BigDecimal getBalance() {
         return balance;
     }
-
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-
-    public Long getTypeId() {
-        return typeId;
+    public AccountType getAccountType() {
+        return accountType;
     }
-
-    public void setTypeId(Long typeId) {
-        this.typeId = typeId;
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
-
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

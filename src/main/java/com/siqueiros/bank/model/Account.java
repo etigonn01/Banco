@@ -24,7 +24,7 @@ public class Account {
     private User user;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     public Account() {}
 

@@ -4,6 +4,9 @@ import com.siqueiros.bank.model.AccountTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface AccountOperationRepository extends JpaRepository<AccountTransaction, Long>{
+public interface AccountTransactionRepository extends JpaRepository<AccountTransaction, Long>{
+    List<AccountTransaction> findTransactionsByAccountId(Long accountId);
 }

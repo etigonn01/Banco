@@ -16,7 +16,7 @@ public class Account {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_operation_id", nullable = false)
+    @JoinColumn(name = "type_account_id", nullable = false)
     private TypeAccount typeAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,10 +47,10 @@ public class Account {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-    public TypeAccount getAccountType() {
+    public TypeAccount getTypeAccount() {
         return typeAccount;
     }
-    public void setAccountType(TypeAccount typeAccount) {
+    public void setTypeAccount(TypeAccount typeAccount) {
         this.typeAccount = typeAccount;
     }
     public User getUser() {

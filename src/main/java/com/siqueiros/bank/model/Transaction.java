@@ -13,18 +13,24 @@ public class Transaction {
     private Long id;
 
     @Column(name = "src_account", nullable = false)
-    private Long sourceAccount;
+    private Account sourceAccount;
 
     @Column(name = "dest_account", nullable = false)
-    private Long destinationAccount;
+    private Account destinationAccount;
 
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")
     private BigDecimal amount;
 
-    @Column(name = "transaction_date", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime transactionDate;
+    @Column(name = "transaction_date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime transactionDateTime;
 
     public Transaction() {}
+    public Transaction(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
+        this.sourceAccount = sourceAccount;
+        this.destinationAccount = destinationAccount;
+        this.amount = amount;
+        this.transactionDateTime = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -34,19 +40,19 @@ public class Transaction {
         this.id = id;
     }
 
-    public Long getSourceAccount() {
+    public Account getSourceAccount() {
         return sourceAccount;
     }
 
-    public void setSourceAccount(Long sourceAccount) {
+    public void setSourceAccount(Account sourceAccount) {
         this.sourceAccount = sourceAccount;
     }
 
-    public Long getDestinationAccount() {
+    public Account getDestinationAccount() {
         return destinationAccount;
     }
 
-    public void setDestinationAccount(Long destinationAccount) {
+    public void setDestinationAccount(Account destinationAccount) {
         this.destinationAccount = destinationAccount;
     }
 
@@ -59,10 +65,10 @@ public class Transaction {
     }
 
     public LocalDateTime getTransactionDate() {
-        return transactionDate;
+        return transactionDateTime;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
-        this.transactionDate = transactionDate;
+    public void setTransactionDate(LocalDateTime transactionDateTime) {
+        this.transactionDateTime = transactionDateTime;
     }
 }

@@ -7,4 +7,4 @@
 
 ## Funciones
 Esta aplicación expone puntos de acceso para realizar operaciones básicas y contidianas de un banco.
-Por ejemplo depositar efectivo en cuenta, retirar efectivo, transferir a otra cuenta.
+<br>Actualmente es posible registrar usuarios y realizar movimientos como retiros y depositos.

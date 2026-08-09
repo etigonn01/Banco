@@ -67,7 +67,7 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
         return new TransactionResponseDTO(
                 savedTransaction.getId(),
                 savedTransaction.getTypeOperation().getName(),
-                savedTransaction.getAccount().getUser().getFullname(),
+                savedTransaction.getAccount().getUser().getFullName(),
                 savedTransaction.getAmount(),
                 savedTransaction.getTransactionDateTime()
         );
@@ -81,7 +81,7 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
                 .map(t -> new TransactionResponseDTO(
                         t.getId(),
                         t.getTypeOperation().getName(),
-                        t.getAccount().getUser().getFullname(),
+                        t.getAccount().getUser().getFullName(),
                         t.getAmount(),
                         t.getTransactionDateTime()
                 ))

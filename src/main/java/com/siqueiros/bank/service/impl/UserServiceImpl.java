@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDTO createUser(UserRequestDTO request) {
-        User user = new User(request.fullname(), request.email(), request.passwordHash(), request.phoneNumber());
+        User user = new User(request.fullName(), request.email(), request.passwordHash(), request.phoneNumber());
         User createdUser = userRepository.save(user);
         return mapToResponseDTO(createdUser);
     }
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO updateUser(Long id, UserRequestDTO request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado. Id: " + id));
-        user.setFullname(request.fullname());
+        user.setFullName(request.fullName());
         user.setEmail(request.email());
         user.setPasswordHash(request.passwordHash());
         user.setPhoneNumber(request.phoneNumber());
@@ -69,6 +69,12 @@ public class UserServiceImpl implements UserService{
     }
 
     private UserResponseDTO mapToResponseDTO(User user) {
-        return new UserResponseDTO(user.getId(), user.getFullname(), user.getEmail(), user.getPasswordHash(), user.getPhoneNumber(), user.getCreatedAt());
+        return new UserResponseDTO(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPasswordHash(),
+                user.getPhoneNumber(),
+                user.getCreatedAt());
     }
 }

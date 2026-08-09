@@ -11,7 +11,7 @@ public class User {
     private Long id;
 
     @Column(name = "fullname", nullable = false, length = 120)
-    private String fullname;
+    private String fullName;
 
     @Column(name = "email", unique = true, length = 50, nullable = false)
     private String email;
@@ -27,8 +27,8 @@ public class User {
 
     public User() {}
 
-    public User(String fullname, String email, String passwordHash, String phoneNumber) {
-        this.fullname = fullname;
+    public User(String fullName, String email, String passwordHash, String phoneNumber) {
+        this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.phoneNumber = phoneNumber;
@@ -41,11 +41,11 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
     public String getEmail() {
         return email;

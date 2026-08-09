@@ -17,7 +17,7 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_operation_id", nullable = false)
-    private AccountType accountType;
+    private TypeAccount typeAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,9 +28,9 @@ public class Account {
 
     public Account() {}
 
-    public Account(BigDecimal balance,  AccountType accountType, User user) {
+    public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
         this.balance = balance;
-        this.accountType = accountType;
+        this.typeAccount = typeAccount;
         this.user = user;
         this.createdAt = LocalDateTime.now();
     }
@@ -47,11 +47,11 @@ public class Account {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-    public AccountType getAccountType() {
-        return accountType;
+    public TypeAccount getAccountType() {
+        return typeAccount;
     }
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
+    public void setAccountType(TypeAccount typeAccount) {
+        this.typeAccount = typeAccount;
     }
     public User getUser() {
         return user;

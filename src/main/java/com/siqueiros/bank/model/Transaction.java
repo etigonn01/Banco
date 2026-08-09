@@ -21,7 +21,7 @@ public class Transaction {
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")
     private BigDecimal amount;
 
-    @Column(name = "transaction_date", columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "transaction_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime transactionDateTime;
 
     public Transaction() {}

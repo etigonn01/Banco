@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUserNotFound(UserNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFound(EntityNotFoundException ex, WebRequest request) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,
@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(AccountNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleAccountNotFound(AccountNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccountNotFound(EntityNotFoundException ex, WebRequest request) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,
@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TypeOperationNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleTypeOperationNotFound(TypeOperationNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTypeOperationNotFound(EntityNotFoundException ex, WebRequest request) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,

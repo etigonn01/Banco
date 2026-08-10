@@ -1,29 +1,29 @@
 package com.siqueiros.bank.controller;
 
-import com.siqueiros.bank.dto.TransactionRequestDTO;
-import com.siqueiros.bank.dto.TransactionResponseDTO;
+import com.siqueiros.bank.dto.AccountTransactionRequestDTO;
+import com.siqueiros.bank.dto.AccountTransactionResponseDTO;
 import com.siqueiros.bank.service.AccountTransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/transactions")
+@RequestMapping("/api/v1/account-trasactions")
 public class AccountTransactionController {
-    private final AccountTransactionService transactionService;
+    private final AccountTransactionService accountTransactionService;
 
-    public AccountTransactionController(AccountTransactionService transactionService) {
-        this.transactionService = transactionService;
+    public AccountTransactionController(AccountTransactionService accountTransactionService) {
+        this.accountTransactionService = accountTransactionService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionResponseDTO create(@RequestBody TransactionRequestDTO request) {
-        return transactionService.createTransaction(request);
+    public AccountTransactionResponseDTO create(@RequestBody AccountTransactionRequestDTO request) {
+        return accountTransactionService.createTransaction(request);
     }
 
     @GetMapping("/{accountId}")
-    public List<TransactionResponseDTO> getAllTransactionsByAccountId(@PathVariable Long accountId) {
-        return transactionService.getTransactionsByAccountId(accountId);
+    public List<AccountTransactionResponseDTO> getAllTransactionsByAccountId(@PathVariable Long accountId) {
+        return accountTransactionService.getTransactionsByAccountId(accountId);
     }
 }

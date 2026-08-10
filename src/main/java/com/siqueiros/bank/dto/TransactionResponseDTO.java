@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 
 public record TransactionResponseDTO(
         Long id,
-        String typeOperation,
-        String accountHolder,
+        String sourceAccountFullName,
+        String destinationAccountFullName,
         BigDecimal amount,
-        LocalDateTime trasactionDateTime
-) {
-}
+        LocalDateTime transactionDateTime
+)
+{}

@@ -27,7 +27,6 @@ public class Account {
     private LocalDateTime createdAt;
 
     public Account() {}
-
     public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
         this.balance = balance;
         this.typeAccount = typeAccount;

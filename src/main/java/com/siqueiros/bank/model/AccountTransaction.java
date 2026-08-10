@@ -12,12 +12,12 @@ public class AccountTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "type_operation_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_operation_id", referencedColumnName = "id", nullable = false)
     private TypeOperation typeOperation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id", referencedColumnName = "id",nullable = false)
     private Account account;
 
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")
@@ -49,12 +49,8 @@ public class AccountTransaction {
     public Account getAccount() {
         return account;
     }
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-    public BigDecimal getAmount() {
-        return amount;
-    }
+    public void setAccount(Account account) { this.account = account; }
+    public BigDecimal getAmount() { return amount; }
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }

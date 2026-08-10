@@ -13,26 +13,25 @@ public class Account {
     private Long id;
 
     @Column(name = "balance", columnDefinition = "NUMERIC(12,2)")
-    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_account_id", nullable = false)
+    @JoinColumn(name = "type_account_id", referencedColumnName = "id",nullable = false)
     private TypeAccount typeAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
     public Account() {}
-
-    public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
+    public Account(BigDecimal balance, TypeAccount typeAccount, User user,  LocalDateTime createdAt) {
         this.balance = balance;
         this.typeAccount = typeAccount;
         this.user = user;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
     }
 
     public Long getId() {

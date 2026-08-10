@@ -2,8 +2,6 @@ package com.siqueiros.bank.service;
 
 import com.siqueiros.bank.dto.UserRequestDTO;
 import com.siqueiros.bank.dto.UserResponseDTO;
-import com.siqueiros.bank.model.User;
-import java.util.Optional;
 import java.util.List;
 
 public interface UserService {

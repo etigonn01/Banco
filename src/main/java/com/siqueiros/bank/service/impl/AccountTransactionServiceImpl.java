@@ -1,11 +1,9 @@
 package com.siqueiros.bank.service.impl;
 
-import com.siqueiros.bank.dto.TransactionRequestDTO;
-import com.siqueiros.bank.dto.TransactionResponseDTO;
-import com.siqueiros.bank.exception.AccountNotFoundException;
+import com.siqueiros.bank.dto.AccountTransactionRequestDTO;
+import com.siqueiros.bank.dto.AccountTransactionResponseDTO;
+import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.exception.InsufficientFundsException;
-import com.siqueiros.bank.exception.TypeOperationNotFoundException;
-import com.siqueiros.bank.exception.UserNotFoundException;
 import com.siqueiros.bank.model.Account;
 import com.siqueiros.bank.model.AccountTransaction;
 import com.siqueiros.bank.model.TypeOperation;
@@ -36,12 +34,12 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
 
     @Override
     @Transactional
-    public TransactionResponseDTO createTransaction(TransactionRequestDTO dto) {
+    public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO dto) {
         Account account = accountRepository.findById(dto.accountId())
-                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada con Id: " + dto.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada con Id: " + dto.accountId()));
 
         TypeOperation typeOperation = typeOperationRepository.findById(dto.typeOperationId())
-                .orElseThrow(() -> new TypeOperationNotFoundException("Tipo de operación no encontrada con Id: " + dto.typeOperationId()));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de operación no encontrada con Id: " + dto.typeOperationId()));
 
 
         if("Retiro".equalsIgnoreCase(typeOperation.getName())) {
@@ -64,7 +62,7 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
         accountRepository.save(account);
         AccountTransaction savedTransaction = transactionRepository.save(transaction);
 
-        return new TransactionResponseDTO(
+        return new AccountTransactionResponseDTO(
                 savedTransaction.getId(),
                 savedTransaction.getTypeOperation().getName(),
                 savedTransaction.getAccount().getUser().getFullName(),
@@ -75,10 +73,10 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
 
     @Override
     @Transactional(readOnly = true)
-    public List<TransactionResponseDTO> getTransactionsByAccountId(Long accountId) {
-        List<AccountTransaction> transactions = transactionRepository.findTransactionsByAccountId(accountId);
+    public List<AccountTransactionResponseDTO> findByAccountId(Long accountId) {
+        List<AccountTransaction> transactions = transactionRepository.findByAccountId(accountId);
         return transactions.stream()
-                .map(t -> new TransactionResponseDTO(
+                .map(t -> new AccountTransactionResponseDTO(
                         t.getId(),
                         t.getTypeOperation().getName(),
                         t.getAccount().getUser().getFullName(),

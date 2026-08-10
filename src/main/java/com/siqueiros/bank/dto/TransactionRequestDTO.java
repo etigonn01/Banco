@@ -1,10 +1,10 @@
 package com.siqueiros.bank.dto;
 
+import com.siqueiros.bank.model.Account;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public record TransactionRequestDTO(
-        Long typeOperationId,
-        Long accountId,
+        Long sourceAccountId,
+        Long destinationAccountId,
         BigDecimal amount
 ) {}

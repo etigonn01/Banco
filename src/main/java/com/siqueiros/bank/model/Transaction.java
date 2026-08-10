@@ -12,10 +12,12 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "src_account", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "src_account", referencedColumnName = "id",nullable = false)
     private Account sourceAccount;
 
-    @Column(name = "dest_account", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dest_account", referencedColumnName = "id", nullable = false)
     private Account destinationAccount;
 
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")

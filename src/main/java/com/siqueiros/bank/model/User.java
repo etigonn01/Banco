@@ -26,7 +26,6 @@ public class User {
     private LocalDateTime createdAt;
 
     public User() {}
-
     public User(String fullName, String email, String passwordHash, String phoneNumber) {
         this.fullName = fullName;
         this.email = email;

@@ -2,7 +2,7 @@ package com.siqueiros.bank.service.impl;
 
 import com.siqueiros.bank.dto.UserRequestDTO;
 import com.siqueiros.bank.dto.UserResponseDTO;
-import com.siqueiros.bank.exception.UserNotFoundException;
+import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.model.User;
 import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.UserService;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO getUserById(Long id) {
        return userRepository.findById(id)
                .map(this::mapToResponseDTO)
-               .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado. Id: " + id));
+               .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + id));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDTO deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado. Id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + id));
         userRepository.delete(user);
         return mapToResponseDTO(user);
     }
@@ -52,13 +52,13 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(this::mapToResponseDTO)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado. Id: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + email));
     }
 
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado. Id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + id));
         user.setFullName(request.fullName());
         user.setEmail(request.email());
         user.setPasswordHash(request.passwordHash());

@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 public record AccountTransactionResponseDTO(
         Long id,
-        String typeOperation,
-        String accountHolder,
+        String operationName,
+        String accountHolderName,
         BigDecimal amount,
         LocalDateTime trasactionDateTime
 )

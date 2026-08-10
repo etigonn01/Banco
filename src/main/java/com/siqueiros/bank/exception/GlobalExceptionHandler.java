@@ -13,33 +13,7 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUserNotFound(EntityNotFoundException ex, WebRequest request) {
-        String cleanPath = request.getDescription(false).replace("uri=", "");
-        ErrorResponseDTO errorBody = new ErrorResponseDTO(
-                cleanPath,
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleAccountNotFound(EntityNotFoundException ex, WebRequest request) {
-        String cleanPath = request.getDescription(false).replace("uri=", "");
-        ErrorResponseDTO errorBody = new ErrorResponseDTO(
-                cleanPath,
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleTypeOperationNotFound(EntityNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,

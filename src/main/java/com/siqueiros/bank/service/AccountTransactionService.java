@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface AccountTransactionService {
     AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO dto);
-    List<AccountTransactionResponseDTO> getTransactionsByAccountId(Long accountId);
+    List<AccountTransactionResponseDTO> findByAccountId(Long accountId);
 }

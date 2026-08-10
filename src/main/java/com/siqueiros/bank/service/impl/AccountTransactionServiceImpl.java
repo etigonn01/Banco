@@ -73,8 +73,8 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
 
     @Override
     @Transactional(readOnly = true)
-    public List<AccountTransactionResponseDTO> getTransactionsByAccountId(Long accountId) {
-        List<AccountTransaction> transactions = transactionRepository.findTransactionsByAccountId(accountId);
+    public List<AccountTransactionResponseDTO> findByAccountId(Long accountId) {
+        List<AccountTransaction> transactions = transactionRepository.findByAccountId(accountId);
         return transactions.stream()
                 .map(t -> new AccountTransactionResponseDTO(
                         t.getId(),

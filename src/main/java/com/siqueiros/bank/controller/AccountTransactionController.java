@@ -24,6 +24,6 @@ public class AccountTransactionController {
 
     @GetMapping("/{accountId}")
     public List<AccountTransactionResponseDTO> getAllTransactionsByAccountId(@PathVariable Long accountId) {
-        return accountTransactionService.getTransactionsByAccountId(accountId);
+        return accountTransactionService.findByAccountId(accountId);
     }
 }

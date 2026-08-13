@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(this::mapToResponseDTO)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Email: " + email));
     }
 
     @Override

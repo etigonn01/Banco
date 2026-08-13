@@ -3,6 +3,7 @@ package com.siqueiros.bank.controller;
 import com.siqueiros.bank.dto.UserRequestDTO;
 import com.siqueiros.bank.dto.UserResponseDTO;
 import com.siqueiros.bank.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<UserResponseDTO> getAll() {
+    public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO request) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO request) {
         UserResponseDTO response = userService.createUser(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

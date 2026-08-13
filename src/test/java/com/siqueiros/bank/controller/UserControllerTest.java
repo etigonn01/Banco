@@ -240,7 +240,6 @@ public class UserControllerTest {
         @Nested
         @DisplayName("Error scenarios")
         class ErrorScenarios {
-            // testdto
             @Test
             @DisplayName("Should return 400 Bad Request whent the fullName length is less than 8 digits")
             void createUser_ShouldReturn400BadRequestWhenTheFullNameLengthIsLessThan8Digits() throws Exception {
@@ -256,120 +255,6 @@ public class UserControllerTest {
                         .andExpect(status().isBadRequest())
                         .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
                         .andExpect(jsonPath("$.validations.fullName").value("El nombre debe tener entre 8 y 120 caracteres"));
-                verifyNoInteractions(userService);
-            }
-
-            // testdto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the fullName length is greater than 120 digits")
-            void createUser_ShouldReturn400BadRequestWhenTheFullNameLengthIsGreaterThan120Digits() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "RxbQgqarUAYxJyfftUykgJHcMxcLuDpXtJVQqTxmepvtFxdCFwjFMRhRKncqNwnfNbYTmYyzchNhLvfHCCaEZiDpVZkDrbrNrvQXxSuYwEpDtApqSbjZKfmtK",
-                        "siqueiros@gmail.com",
-                        "siqueiros2039",
-                        "7653847263"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.fullName").value("El nombre debe tener entre 8 y 120 caracteres"));
-                verifyNoInteractions(userService);
-            }
-
-            //testdto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the email format is invalid")
-            void createUser_ShouldReturn400BadRequestWhenTheEmailFormatIsInvalid() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "Pedro Siqueiros",
-                        "siqueiros.gmail.com",
-                        "siqueiros2039",
-                        "7653847263"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.email").value("El formato del correo electrónico no es valido"));
-                verifyNoInteractions(userService);
-            }
-
-            //testdto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the email length is less than 8 digits")
-            void createUser_ShouldReturn400BadRequestWhenTheEmailLengthIsLessThan8Digits() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "Pedro Siqueiros",
-                        "s@a.com",
-                        "siqueiros2039",
-                        "7653847263"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.email").value("El correo electrónico debe tener entre 8 y 50 caracteres"));
-                verifyNoInteractions(userService);
-            }
-
-            //testdto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the email length is greater than 50 digits")
-            void createUser_ShouldReturn400BadRequestWhenTheEmailLengthIsGreaterThan50Digits() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "Pedro Siqueiros",
-                        "vW2rgCCKCbb6a4bNCwTNRaDzbZDgkzh0d1PgajfRVmhyxe8CFj@apple.com",
-                        "siqueiros2039",
-                        "7653847263"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.email").value("El correo electrónico debe tener entre 8 y 50 caracteres"));
-                verifyNoInteractions(userService);
-            }
-
-            //testgto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the password hash is empty")
-            void createUser_ShouldReturn400BadRequestWhenThePasswordHashIsEmpty() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "Pedro Siqueiros",
-                        "siqueiros@gmail.com",
-                        "",
-                        "7653847263"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.passwordHash").value("El hash de la contraseña no puede estar vació"));
-                verifyNoInteractions(userService);
-            }
-
-            //testdto
-            @Test
-            @DisplayName("Should return 400 Bad Request when the phoneNumber is different than 10 digits")
-            void createUser_ShouldReturn400BadRequestWhenThePhoneNumberIsDifferentThan10Digits() throws Exception {
-                UserRequestDTO invalidRequest = new UserRequestDTO(
-                        "Pedro Siqueiros",
-                        "siqueiros@gmail.com",
-                        "password1234",
-                        "892738272"
-                );
-                mockMvc.perform(post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.message").value("Los datos enviados en la petición no cumplen con los requisitos"))
-                        .andExpect(jsonPath("$.validations.phoneNumber").value("El número de teléfono debe ser un formato de 10 dígitos"));
                 verifyNoInteractions(userService);
             }
         }
@@ -445,7 +330,7 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                         .andExpect(status().isBadRequest())
                         .andExpect(jsonPath("$.status").value(400))
-                        .andExpect(jsonPath("$.validations.email").value("El formato del correo electrónico no es valido"));
+                        .andExpect(jsonPath("$.validations.email").value("El formato del correo electrónico no es válido"));
                 verifyNoInteractions(userService);
             }
         }

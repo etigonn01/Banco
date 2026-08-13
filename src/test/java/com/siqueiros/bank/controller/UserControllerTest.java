@@ -1,10 +1,10 @@
 package com.siqueiros.bank.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -45,8 +45,8 @@ public class UserControllerTest {
         @DisplayName("Successfully scenarios")
         class SuccessfullyScenarios {
             @Test
-            @DisplayName("Should return a list of users with 200 OK status")
-            void getAllUsers_ShouldReturnAListOfUsersWith200OKStatus() throws Exception {
+            @DisplayName("Should return a list of users with 200 OK status when there are users")
+            void getAllUsers_ShouldReturnAListOfUsersWith200OKStatusWhenThereAreUsers() throws Exception {
                 UserResponseDTO user1 = new UserResponseDTO(
                         1L,
                         "Juan Medina Sauceda",
@@ -117,6 +117,7 @@ public class UserControllerTest {
                         .andExpect(jsonPath("$.fullName").value("Manuel Contreras"));
             }
         }
+
         @Nested
         @DisplayName("Error scenarios")
         class ErrorScenarios {
@@ -124,7 +125,7 @@ public class UserControllerTest {
             @DisplayName("Should return 404 Not Found when the Id doesn't exist")
             void getUserById_ShouldReturn404NotFoundWhenTheIdDoesntExist() throws Exception {
                 Long userId = 99L;
-                String exceptionMessage = "Usuario no encontrado. Id: " +  userId;
+                String exceptionMessage = "Usuario no encontrado. Id: " + userId;
                 when(userService.getUserById(userId)).thenThrow(new EntityNotFoundException(exceptionMessage));
                 mockMvc.perform(get("/api/v1/users/search/" + userId)
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -132,13 +133,14 @@ public class UserControllerTest {
                         .andExpect(jsonPath("$.message").value(exceptionMessage));
             }
 
+            // test para el userdto
             @Test
             @DisplayName("Should return 400 Bad Request when the id cannot be converted to type Long")
             void getUserById_ShouldReturn400BadRequestWhenTheIdCannotBeConvertedToLong() throws Exception {
                 String invalidId = "4.5a";
                 String expectedExceptionMessage = "El párametro 'id' debe ser un número entero válido";
                 mockMvc.perform(get("/api/v1/users/search/" + invalidId)
-                        .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
                         .andExpect(jsonPath("$.status").value(400))
                         .andExpect(jsonPath("$.validations.id").value(CoreMatchers.containsString(expectedExceptionMessage)))
@@ -155,7 +157,7 @@ public class UserControllerTest {
         class SuccessfullyScenarios {
             @Test
             @DisplayName("Should return 200 OK status when the email exists")
-            void  getUserByEmail_ShouldReturn200OkStatusWhenTheEmailExists() throws Exception {
+            void getUserByEmail_ShouldReturn200OkStatusWhenTheEmailExists() throws Exception {
                 String email = "contreras@outlook.com";
                 UserResponseDTO mockUser = new UserResponseDTO(
                         1L,
@@ -178,10 +180,10 @@ public class UserControllerTest {
         class ErrorScenarios {
             @Test
             @DisplayName("Should return 400 Bad Request when the email is not sent")
-            void  getUserByEmail_ShouldReturn400BadRequestWhenTheEmailIsNotSent() throws Exception {
+            void getUserByEmail_ShouldReturn400BadRequestWhenTheEmailIsNotSent() throws Exception {
                 String expectedMessage = "La petición no recibió el párametro requerido";
                 mockMvc.perform(get("/api/v1/users/search?")
-                        .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
                         .andExpect(jsonPath("$.status").value(400))
                         .andExpect(jsonPath("$.message").value(CoreMatchers.containsString(expectedMessage)));
@@ -189,7 +191,7 @@ public class UserControllerTest {
 
             @Test
             @DisplayName("Should return 404 Not Found when the email does not exists")
-                void getUserByEmail_ShouldReturn404NotFoundWhenTheEmailDoesNotExists() throws Exception {
+            void getUserByEmail_ShouldReturn404NotFoundWhenTheEmailDoesNotExists() throws Exception {
                 String emailNotFound = "siqueiros@apple.com";
                 String expectedExceptionMessage = "Usuario no encontrado. Email: " + emailNotFound;
                 when(userService.getUserByEmail(emailNotFound)).thenThrow(new EntityNotFoundException(expectedExceptionMessage));
@@ -238,6 +240,7 @@ public class UserControllerTest {
         @Nested
         @DisplayName("Error scenarios")
         class ErrorScenarios {
+            // testdto
             @Test
             @DisplayName("Should return 400 Bad Request whent the fullName length is less than 8 digits")
             void createUser_ShouldReturn400BadRequestWhenTheFullNameLengthIsLessThan8Digits() throws Exception {
@@ -256,6 +259,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            // testdto
             @Test
             @DisplayName("Should return 400 Bad Request when the fullName length is greater than 120 digits")
             void createUser_ShouldReturn400BadRequestWhenTheFullNameLengthIsGreaterThan120Digits() throws Exception {
@@ -274,6 +278,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            //testdto
             @Test
             @DisplayName("Should return 400 Bad Request when the email format is invalid")
             void createUser_ShouldReturn400BadRequestWhenTheEmailFormatIsInvalid() throws Exception {
@@ -292,6 +297,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            //testdto
             @Test
             @DisplayName("Should return 400 Bad Request when the email length is less than 8 digits")
             void createUser_ShouldReturn400BadRequestWhenTheEmailLengthIsLessThan8Digits() throws Exception {
@@ -310,6 +316,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            //testdto
             @Test
             @DisplayName("Should return 400 Bad Request when the email length is greater than 50 digits")
             void createUser_ShouldReturn400BadRequestWhenTheEmailLengthIsGreaterThan50Digits() throws Exception {
@@ -328,6 +335,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            //testgto
             @Test
             @DisplayName("Should return 400 Bad Request when the password hash is empty")
             void createUser_ShouldReturn400BadRequestWhenThePasswordHashIsEmpty() throws Exception {
@@ -346,6 +354,7 @@ public class UserControllerTest {
                 verifyNoInteractions(userService);
             }
 
+            //testdto
             @Test
             @DisplayName("Should return 400 Bad Request when the phoneNumber is different than 10 digits")
             void createUser_ShouldReturn400BadRequestWhenThePhoneNumberIsDifferentThan10Digits() throws Exception {
@@ -373,13 +382,118 @@ public class UserControllerTest {
         @Nested
         @DisplayName("Successfully scenarios")
         class UserUpdateScenarios {
-
+            @Test
+            @DisplayName("Should return 200 OK status when the id exists and the payload is valid")
+            void updateUser_ShouldReturn200OKStatusWhenTheIdExistsAndThePayloadIsValid() throws Exception {
+                Long userId = 99L;
+                UserRequestDTO request = new UserRequestDTO(
+                        "María Rosario Espinoza Burgos",
+                        "rosario@apple.com",
+                        "password1234",
+                        "7658374728"
+                );
+                UserResponseDTO mockUserResponse = new UserResponseDTO(
+                        userId,
+                        "María Rosario Espinoza Burgos",
+                        "rosario@apple.com",
+                        "password1234",
+                        "7658374728",
+                        LocalDateTime.now()
+                );
+                when(userService.updateUser(eq(userId), any(UserRequestDTO.class))).thenReturn(mockUserResponse);
+                mockMvc.perform(put("/api/v1/users/" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(userId))
+                        .andExpect(jsonPath("$.email").value("rosario@apple.com"));
+            }
         }
 
         @Nested
         @DisplayName("Error scenarios")
         class UserUpdateErrorScenarios {
+            @Test
+            @DisplayName("Should return 404 Not Found when the id does not exists and the payload is valid")
+            void updateUser_ShouldReturn404BadRequestWhenTheIdDoesNotExistsAndThePayloadIsValid() throws Exception {
+                long userId = 100L;
+                String errorMessage = "Usuario no encontrado. Id: " + userId;
+                UserRequestDTO request = new UserRequestDTO(
+                        "María Rosario Espinoza Burgos",
+                        "rosario@apple.com",
+                        "password1234",
+                        "7658374728"
+                );
 
+                when(userService.updateUser(eq(userId), any(UserRequestDTO.class))).thenThrow(new EntityNotFoundException(errorMessage));
+                mockMvc.perform(put("/api/v1/users/" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("$.status").value(404))
+                        .andExpect(jsonPath("$.message").value(errorMessage));
+            }
+
+            @Test
+            @DisplayName("Should return 400 Bad Request when the payload is invalid")
+            void updateUser_ShouldReturn400BadRequestWhenThePayloadIsInvalid() throws Exception {
+                long userID = 1L;
+                var invalidRequest = new UserRequestDTO("María Rosario Hernandez", "rosarios.apple.com", "password1234", "7658374728");
+
+                mockMvc.perform(put("/api/v1/users/" + userID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.status").value(400))
+                        .andExpect(jsonPath("$.validations.email").value("El formato del correo electrónico no es valido"));
+                verifyNoInteractions(userService);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("UserDeleteTests")
+    class  UserDeleteTests {
+        @Nested
+        @DisplayName("Successfully scenarios")
+        class UserDeleteScenarios {
+            @Test
+            @DisplayName("Should return 200 OK status when the id exists")
+            void  deleteUser_ShouldReturn200OKStatusWhenTheIdExistsAndThePayloadIsValid() throws Exception {
+                long userId = 1L;
+                UserResponseDTO userDeleted = new UserResponseDTO(
+                        userId,
+                        "Graciela Ramirez",
+                        "ramirezgraciela@yahoo.com",
+                        "password1234",
+                        "8734672829",
+                        LocalDateTime.now()
+                );
+                when(userService.deleteUser(userId)).thenReturn(userDeleted);
+                mockMvc.perform(delete("/api/v1/users/" + userId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(userId))
+                        .andExpect(jsonPath("$.phoneNumber").value("8734672829"));
+                ;
+            }
+        }
+
+        @Nested
+        @DisplayName("Error scenarios")
+        class  UserDeleteErrorScenarios {
+            @Test
+            @DisplayName("Should return 404 Not Found when id does not exists")
+            void deleteUser_ShouldReturn404NotFoundWhenTheIDDoesNotExists()  throws Exception {
+                long userId = 100L;
+                String errorMessage = "Usuario no encontrado. Id: " + userId;
+                when(userService.deleteUser(eq(userId))).thenThrow(new EntityNotFoundException(errorMessage));
+                mockMvc.perform(delete("/api/v1/users/" + userId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("$.status").value(404))
+                        .andExpect(jsonPath("$.message").value(errorMessage));
+            }
         }
     }
 }

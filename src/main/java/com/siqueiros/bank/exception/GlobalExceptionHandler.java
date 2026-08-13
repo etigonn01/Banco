@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import com.siqueiros.bank.dto.ErrorResponseDTO;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -111,5 +112,22 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorBody, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        String parameterName = ex.getParameterName();
+        String parameterType = ex.getParameterType();
+        String errorMessage = String.format("La petición no recibió el párametro requerido '%s' de tipo '%s'", parameterName, parameterType);
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                errorMessage,
+                LocalDateTime.now(),
+                null
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.BAD_REQUEST);
     }
 }

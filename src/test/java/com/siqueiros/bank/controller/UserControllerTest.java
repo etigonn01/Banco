@@ -148,6 +148,61 @@ public class UserControllerTest {
     }
 
     @Nested
+    @DisplayName("Get user by email tests")
+    class GetUserByEmailValidationTests {
+        @Nested
+        @DisplayName("Successfully scenarios")
+        class SuccessfullyScenarios {
+            @Test
+            @DisplayName("Should return 200 OK status when the email exists")
+            void  getUserByEmail_ShouldReturn200OkStatusWhenTheEmailExists() throws Exception {
+                String email = "contreras@outlook.com";
+                UserResponseDTO mockUser = new UserResponseDTO(
+                        1L,
+                        "Manuel Contreras",
+                        "contreras@outlook.com",
+                        "password1234",
+                        "8763647282",
+                        LocalDateTime.now());
+                when(userService.getUserByEmail(email)).thenReturn(mockUser);
+                mockMvc.perform(get("/api/v1/users/search?email=" + email)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.email").value(email))
+                        .andExpect(jsonPath("$.fullName").value("Manuel Contreras"));
+            }
+        }
+
+        @Nested
+        @DisplayName("Error scenarios")
+        class ErrorScenarios {
+            @Test
+            @DisplayName("Should return 400 Bad Request when the email is not sent")
+            void  getUserByEmail_ShouldReturn400BadRequestWhenTheEmailIsNotSent() throws Exception {
+                String expectedMessage = "La petición no recibió el párametro requerido";
+                mockMvc.perform(get("/api/v1/users/search?")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.status").value(400))
+                        .andExpect(jsonPath("$.message").value(CoreMatchers.containsString(expectedMessage)));
+            }
+
+            @Test
+            @DisplayName("Should return 404 Not Found when the email does not exists")
+                void getUserByEmail_ShouldReturn404NotFoundWhenTheEmailDoesNotExists() throws Exception {
+                String emailNotFound = "siqueiros@apple.com";
+                String expectedExceptionMessage = "Usuario no encontrado. Email: " + emailNotFound;
+                when(userService.getUserByEmail(emailNotFound)).thenThrow(new EntityNotFoundException(expectedExceptionMessage));
+                mockMvc.perform(get("/api/v1/users/search?email=" + emailNotFound)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("$.status").value(404))
+                        .andExpect(jsonPath("$.message").value(expectedExceptionMessage));
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("User registration validation tests")
     class UserRegistrationValidationTests {
         @Nested
@@ -260,7 +315,7 @@ public class UserControllerTest {
             void createUser_ShouldReturn400BadRequestWhenTheEmailLengthIsGreaterThan50Digits() throws Exception {
                 UserRequestDTO invalidRequest = new UserRequestDTO(
                         "Pedro Siqueiros",
-                        "RxbQgqarUAYxJyfftUykgJHcMxcLuDpXtJVQqTxmepvtFxdCFwjFMRhRKncqNwnfNbYTmYyzchNhLvfHCCaEZiDpVZkDrbrNrvQXxSuYwEpDtApqSbjZKfmtK@gmail.com",
+                        "vW2rgCCKCbb6a4bNCwTNRaDzbZDgkzh0d1PgajfRVmhyxe8CFj@apple.com",
                         "siqueiros2039",
                         "7653847263"
                 );
@@ -310,5 +365,21 @@ public class UserControllerTest {
             }
         }
 
+    }
+
+    @Nested
+    @DisplayName("User update validation tests")
+    class UserUpdateValidationTests {
+        @Nested
+        @DisplayName("Successfully scenarios")
+        class UserUpdateScenarios {
+
+        }
+
+        @Nested
+        @DisplayName("Error scenarios")
+        class UserUpdateErrorScenarios {
+
+        }
     }
 }

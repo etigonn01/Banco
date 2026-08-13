@@ -9,7 +9,7 @@ public record UserRequestDTO(
         String fullName,
 
         @Size(min = 8, max = 50, message = "El correo electrónico debe tener entre 8 y 50 caracteres")
-        @Email(message = "El formato del correo electrónico no es valido")
+        @Email(message = "El formato del correo electrónico no es válido")
         String email,
 
         // TODO: implentar una función de encriptado de contraseña y validar la prueba unitaria

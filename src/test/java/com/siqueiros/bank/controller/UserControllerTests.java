@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+public class UserControllerTests {
 
     @Autowired
     private MockMvc mockMvc;

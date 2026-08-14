@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Unit tests for UserRequestDTO validation")
-public class UserRequestDTOTest {
+public class UserRequestDTOTests {
     private static Validator validator;
 
     @BeforeAll

@@ -25,6 +25,8 @@ public class User {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
+    public User() {}
+
     public User(long id, String fullName, String email, String passwordHash, String phoneNumber, LocalDateTime createdAt) {
         this.id = id;
         this.fullName = fullName;

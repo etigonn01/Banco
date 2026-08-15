@@ -96,17 +96,11 @@ public class GlobalExceptionHandler {
     ) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
 
-        String message = "El correo electrónico proporcionado ya está registrado en el sistema.";
-
-        if(ex.getMostSpecificCause().getMessage().contains("phone")) {
-            message = "El número de teléfono proporcionado ya está registrado en el sistema.";
-        }
-
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
-                message,
+                ex.getMessage(),
                 LocalDateTime.now(),
                 null
         );

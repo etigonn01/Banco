@@ -6,6 +6,7 @@ import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.model.User;
 import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.UserService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +60,21 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO updateUser(Long id, UserRequestDTO request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + id));
+
+        userRepository.findByEmail(request.email())
+                        .ifPresent(existingUser -> {
+                           if (!existingUser.getId().equals(id)) {
+                               throw new DataIntegrityViolationException("El correo electrónico ya está registrado por otro usuario");
+                           }
+                        });
+
+        userRepository.findByPhoneNumber(request.phoneNumber())
+                        .ifPresent(existingUser -> {
+                           if (!existingUser.getId().equals(id)) {
+                               throw new DataIntegrityViolationException("El número de télefono ya está registrado por otro usuario");
+                           }
+                        });
+
         user.setFullName(request.fullName());
         user.setEmail(request.email());
         user.setPasswordHash(request.passwordHash());

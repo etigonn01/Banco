@@ -11,12 +11,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.siqueiros.bank.dto.UserRequestDTO;
 import com.siqueiros.bank.dto.UserResponseDTO;
 import com.siqueiros.bank.exception.EntityNotFoundException;
+import com.siqueiros.bank.model.User;
 import com.siqueiros.bank.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
@@ -268,8 +270,8 @@ public class UserControllerTests {
         @DisplayName("Successfully scenarios")
         class UserUpdateScenarios {
             @Test
-            @DisplayName("Should return 200 OK status when the id exists and the payload is valid")
-            void updateUser_ShouldReturn200OKStatusWhenTheIdExistsAndThePayloadIsValid() throws Exception {
+            @DisplayName("Should return 200 OK status and update if the user retains the same unique data")
+            void updateUser_ShouldReturn200OKStatusAndUpdateIfTheUserRetainsTheSameUniqueData() throws Exception {
                 Long userId = 99L;
                 UserRequestDTO request = new UserRequestDTO(
                         "María Rosario Espinoza Burgos",
@@ -277,15 +279,17 @@ public class UserControllerTests {
                         "password1234",
                         "7658374728"
                 );
-                UserResponseDTO mockUserResponse = new UserResponseDTO(
+                UserResponseDTO response = new UserResponseDTO(
                         userId,
-                        "María Rosario Espinoza Burgos",
-                        "rosario@apple.com",
-                        "password1234",
-                        "7658374728",
+                        request.fullName(),
+                        request.email(),
+                        request.passwordHash(),
+                        request.phoneNumber(),
                         LocalDateTime.now()
                 );
-                when(userService.updateUser(eq(userId), any(UserRequestDTO.class))).thenReturn(mockUserResponse);
+
+                when(userService.updateUser(eq(userId), any(UserRequestDTO.class))).thenReturn(response);
+
                 mockMvc.perform(put("/api/v1/users/" + userId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
@@ -332,6 +336,44 @@ public class UserControllerTests {
                         .andExpect(jsonPath("$.status").value(400))
                         .andExpect(jsonPath("$.validations.email").value("El formato del correo electrónico no es válido"));
                 verifyNoInteractions(userService);
+            }
+
+            @Test
+            @DisplayName("Should throw DataIntegrityViolation when the email belongs to another user")
+            void updateUser_ShouldThrowDataIntegrityViolationWhenTheEmailBelongsToAnotherUser() throws Exception {
+                long userId = 99L;
+                User originalUser = new User(userId, "Maria Cortes", "cortes.maria@apple.com", "password1234", "9997778833", LocalDateTime.now());
+
+                var request = new UserRequestDTO("Maria Sanchez Cortes", "cortes.maria@apple.com", "password4321", "9998887364");
+
+                when(userService.updateUser(eq(userId), any(UserRequestDTO.class)))
+                        .thenThrow(new DataIntegrityViolationException("El correo electrónico ya está registrado por otro usuario"));
+
+                mockMvc.perform(put("/api/v1/users/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                        .andExpect(status().isConflict())
+                        .andExpect(jsonPath("$.status").value(409))
+                        .andExpect(jsonPath("$.error").value("Conflict"))
+                        .andExpect(jsonPath("$.message").value("El correo electrónico ya está registrado por otro usuario"));
+            }
+
+            @Test
+            @DisplayName("Should throw DataIntegrityViolation when the phone number belongs to another user")
+            void updateUser_ShouldThrowDataIntegrityViolationWhenThePhoneNumberBelongsToAnotherUser() throws Exception {
+                long userId = 99L;
+                var request = new UserRequestDTO("Maria Sanchez Cortes", "sanchez.maria@gmail.com", "password4321", "9997778833");
+
+                when(userService.updateUser(eq(userId), any(UserRequestDTO.class)))
+                        .thenThrow(new DataIntegrityViolationException("El número de télefono ya está registrado por otro usuario"));
+
+                mockMvc.perform(put("/api/v1/users/" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                        .andExpect(status().isConflict())
+                        .andExpect(jsonPath("$.status").value(409))
+                        .andExpect(jsonPath("$.error").value("Conflict"))
+                        .andExpect(jsonPath("$.message").value("El número de télefono ya está registrado por otro usuario"));
             }
         }
     }

@@ -45,11 +45,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         String parameterName = ex.getName();
-        String sendedValue = String.valueOf(ex.getValue());
+        String sentValue = String.valueOf(ex.getValue());
         String requiredType = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "desconocido";
         Map<String, String> validations = Map.of(
                 parameterName, String.format("El párametro '%s' debe ser un número entero válido de tipo '%s'. Se recibió el valor inválido: '%s'",
-                parameterName, requiredType, sendedValue)
+                parameterName, requiredType, sentValue)
             );
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,

@@ -37,8 +37,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDTO createUser(UserRequestDTO request) {
         User user = new User(request.fullName(), request.email(), request.passwordHash(), request.phoneNumber());
-        User createdUser = userRepository.save(user);
-        return mapToResponseDTO(createdUser);
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new DataIntegrityViolationException("El correo electrónico ya está registrado por otro usuario");
+        }
+        if(userRepository.findByPhoneNumber(request.phoneNumber()).isPresent()){
+            throw new DataIntegrityViolationException("El número de télefono ya está registrado por otro usuario");
+        }
+        return mapToResponseDTO(userRepository.save(user));
     }
 
     @Override
@@ -67,7 +72,6 @@ public class UserServiceImpl implements UserService{
                                throw new DataIntegrityViolationException("El correo electrónico ya está registrado por otro usuario");
                            }
                         });
-
         userRepository.findByPhoneNumber(request.phoneNumber())
                         .ifPresent(existingUser -> {
                            if (!existingUser.getId().equals(id)) {
@@ -80,8 +84,7 @@ public class UserServiceImpl implements UserService{
         user.setPasswordHash(request.passwordHash());
         user.setPhoneNumber(request.phoneNumber());
 
-        User updatedUser = userRepository.save(user);
-        return mapToResponseDTO(updatedUser);
+        return mapToResponseDTO(userRepository.save(user));
     }
 
     private UserResponseDTO mapToResponseDTO(User user) {

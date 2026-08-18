@@ -30,7 +30,7 @@ public class TypeOperationServiceImpl implements TypeOperationService {
     @Override
     public TypeOperationResponseDTO createTypeOperation(TypeOperationRequestDTO request) {
         if (typeOperationRepository.findByName(request.name().toLowerCase(Locale.ROOT)).isPresent()) {
-            throw new DataIntegrityViolationException("El tipo de operación ya está registrada");
+            throw new DataIntegrityViolationException("El tipo de operación ya está registrada y en uso");
         }
         TypeOperation typeOperation = new TypeOperation(request.name().toLowerCase(Locale.ROOT));
         return mapToResponse(this.typeOperationRepository.save(typeOperation));

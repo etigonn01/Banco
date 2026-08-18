@@ -29,10 +29,10 @@ public class TypeOperationServiceImpl implements TypeOperationService {
 
     @Override
     public TypeOperationResponseDTO createTypeOperation(TypeOperationRequestDTO request) {
-        if (typeOperationRepository.findByName(request.name().toLowerCase(Locale.ROOT)).isPresent()) {
+        if (typeOperationRepository.findByName(request.name().toLowerCase()).isPresent()) {
             throw new DataIntegrityViolationException("El tipo de operación ya está registrada y en uso");
         }
-        TypeOperation typeOperation = new TypeOperation(request.name().toLowerCase(Locale.ROOT));
+        TypeOperation typeOperation = new TypeOperation(request.name().toLowerCase());
         return mapToResponse(this.typeOperationRepository.save(typeOperation));
     }
 
@@ -47,7 +47,7 @@ public class TypeOperationServiceImpl implements TypeOperationService {
                         throw new DataIntegrityViolationException("El tipo de opreación proporcionada ya está registrada y en uso");
                     }
                 });
-        typeOperation.setName(request.name().toLowerCase(Locale.ROOT));
+        typeOperation.setName(request.name().toLowerCase());
 
         return mapToResponse(typeOperationRepository.save(typeOperation));
     }

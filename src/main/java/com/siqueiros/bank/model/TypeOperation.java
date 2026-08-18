@@ -13,6 +13,10 @@ public class TypeOperation {
     private String name;
 
     public TypeOperation() {}
+    public TypeOperation(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
     public TypeOperation(String name) { this.name = name; }
 
     public Long getId() {

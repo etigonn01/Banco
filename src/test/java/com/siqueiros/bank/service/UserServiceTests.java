@@ -37,7 +37,7 @@ public class UserServiceTests {
     class GetAllUsersTests {
         @Nested
         @DisplayName("Successfully scenarios")
-        class Scenarios{
+        class SuccessFullyScenarios{
             @Test
             @DisplayName("Should return a list of DTOs when there are users")
             void getAllUsers_ShouldReturnAListOfDTOsWhenThereAreUsers() {

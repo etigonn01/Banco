@@ -13,6 +13,10 @@ public class TypeAccount {
     private String name;
 
     public TypeAccount() {}
+    public TypeAccount(Long id, String name){
+        this.id = id;
+        this.name = name;
+    }
     public TypeAccount(String name) { this.name = name; }
 
     public Long getId() {

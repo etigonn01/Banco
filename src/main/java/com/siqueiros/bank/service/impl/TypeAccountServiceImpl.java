@@ -52,7 +52,7 @@ public class TypeAccountServiceImpl implements TypeAccountService
         TypeAccount typeAccount = typeAccountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no encontrada. Id:" + id));
 
-        typeAccountRepository.findByName(request.name().toUpperCase())
+        typeAccountRepository.findByName(request.name().toLowerCase())
                 .ifPresent(existingTypeAccount -> {
                     if (!existingTypeAccount.getId().equals(id)) {
                         throw new DataIntegrityViolationException("El tipo de cuenta proporcionada ya está registrado y en uso");

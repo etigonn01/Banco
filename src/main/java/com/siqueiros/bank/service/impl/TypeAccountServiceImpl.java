@@ -40,7 +40,7 @@ public class TypeAccountServiceImpl implements TypeAccountService
 
     @Override
     public TypeAccountResponseDTO createTypeAccount(TypeAccountRequestDTO request) {
-        if (typeAccountRepository.findByName(request.name().toUpperCase()).isPresent()) {
+        if (typeAccountRepository.findByName(request.name().toLowerCase()).isPresent()) {
             throw new DataIntegrityViolationException("El tipo de cuenta proporcionada ya está registrado y en uso");
         }
         TypeAccount typeOperation = new TypeAccount(request.name().toLowerCase());
@@ -50,7 +50,7 @@ public class TypeAccountServiceImpl implements TypeAccountService
     @Override
     public TypeAccountResponseDTO updateTypeAccount(Long id, TypeAccountRequestDTO request) {
         TypeAccount typeAccount = typeAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no encontrada. Id:" + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no encontrada. Id: " + id));
 
         typeAccountRepository.findByName(request.name().toLowerCase())
                 .ifPresent(existingTypeAccount -> {
@@ -58,14 +58,14 @@ public class TypeAccountServiceImpl implements TypeAccountService
                         throw new DataIntegrityViolationException("El tipo de cuenta proporcionada ya está registrado y en uso");
                     }
                 });
-        typeAccount.setName(request.name());
+        typeAccount.setName(request.name().toLowerCase());
         return mapToResponse(this.typeAccountRepository.save(typeAccount));
     }
 
     @Override
     public TypeAccountResponseDTO deleteTypeAccount(Long id) {
         TypeAccount typeAccount = typeAccountRepository.findById(id)
-                .orElseThrow(() -> new  EntityNotFoundException("Tipo de cuenta no encontrada. Id:" + id));
+                .orElseThrow(() -> new  EntityNotFoundException("Tipo de cuenta no encontrada. Id: " + id));
         typeAccountRepository.delete(typeAccount);
         return mapToResponse(typeAccount);
     }

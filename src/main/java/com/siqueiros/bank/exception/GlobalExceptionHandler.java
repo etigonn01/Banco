@@ -81,13 +81,13 @@ public class GlobalExceptionHandler {
         String cleanPath = request.getDescription(false).replace("uri=", "");
         ErrorResponseDTO errorBody = new ErrorResponseDTO(
                 cleanPath,
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
                 LocalDateTime.now(),
                 null
         );
-        return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorBody, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

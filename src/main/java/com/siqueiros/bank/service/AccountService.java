@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AccountService {
     List<AccountResponseDTO> findAllAccounts();
-    AccountResponseDTO findByAccountId(Long id);
+    AccountResponseDTO findByAccountId(Long accountId);
     AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO);
-    AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO);
-    AccountResponseDTO deleteAccount(Long id);
+    AccountResponseDTO updateAccount(Long accountId, AccountRequestDTO accountRequestDTO);
+    AccountResponseDTO deleteAccount(Long accountId);
 }

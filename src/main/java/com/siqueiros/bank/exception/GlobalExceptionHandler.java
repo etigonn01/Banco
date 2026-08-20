@@ -124,4 +124,18 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorBody, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DuplicatedAccountException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDuplicatedAccount(DuplicatedAccountException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
+        return  new ResponseEntity<>(errorBody, HttpStatus.CONFLICT);
+    }
 }

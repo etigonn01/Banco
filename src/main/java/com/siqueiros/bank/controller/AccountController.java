@@ -32,8 +32,8 @@ public class AccountController {
 
     @PutMapping("/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public AccountResponseDTO update(@PathVariable Long accountId, @Valid @RequestBody AccountRequestDTO accountRequestDTO){
-        return accountService.updateAccount(accountId, accountRequestDTO);
+    public AccountResponseDTO update(@PathVariable Long accountId, @RequestBody AccountRequestDTO request){
+        return accountService.updateAccount(accountId, request.typeAccountId());
     }
 
     @DeleteMapping("/{accountId}")

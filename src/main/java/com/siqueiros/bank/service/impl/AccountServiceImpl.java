@@ -11,6 +11,7 @@ import com.siqueiros.bank.repositories.TypeAccountRepository;
 import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.AccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -55,13 +56,13 @@ public class AccountServiceImpl implements AccountService
         var typeAccount = typeAccountRepository.findById(accountRequestDTO.typeAccountId())
                 .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no encontrada. Id: " + accountRequestDTO.typeAccountId()));
 
-        boolean isDuplicatedAccount = accountRepository.existsByUserIdAndTypeAccountID(accountRequestDTO.userId(), accountRequestDTO.typeAccountId());
+        boolean isDuplicatedAccount = accountRepository.existsByUserIdAndTypeAccountId(accountRequestDTO.userId(), accountRequestDTO.typeAccountId());
         if (isDuplicatedAccount) {
             throw new DuplicatedAccountException("El usuario ya tiene registrada una cuenta de este tipo. Solo se permite un tipo de cuenta por usuario");
         }
 
         if (accountRequestDTO.balance().compareTo(BigDecimal.ZERO) < 0) {
-            throw new InsufficientFundsException("La cuenta no puede crearse con saldo negativo. Saldo actual: " +  accountRequestDTO.balance());
+            throw new InsufficientFundsException("La cuenta no puede crearse con saldo negativo. Saldo actual: $ " +  accountRequestDTO.balance());
         }
 
         Account newAccount = new Account(accountRequestDTO.balance(), typeAccount, user, LocalDateTime.now());
@@ -70,19 +71,14 @@ public class AccountServiceImpl implements AccountService
     }
 
     @Override
-    public AccountResponseDTO updateAccount(Long accountId, AccountRequestDTO accountRequestDTO) {
-        var user  = userRepository.findById(accountRequestDTO.userId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " + accountRequestDTO.userId()));
-        var typeAccount = typeAccountRepository.findById(accountRequestDTO.typeAccountId())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no  encontrada. Id: " + accountRequestDTO.typeAccountId()));
-        if (accountRequestDTO.balance().compareTo(BigDecimal.ZERO) < 0) {
-            throw new InsufficientFundsException("La cuenta no puede actualizarse con saldo negativo. Saldo actual: " +  accountRequestDTO.balance());
-        }
+    public AccountResponseDTO updateAccount(Long accountId, Long typeAccountId) {
+        var typeAccount = typeAccountRepository.findById(typeAccountId)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no  encontrada. Id: " + typeAccountId));
+
         var account  = accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada. Id: " + accountId));
-        account.setBalance(accountRequestDTO.balance());
+
         account.setTypeAccount(typeAccount);
-        account.setUser(user);
         return mapToResponse(accountRepository.save(account));
     }
 

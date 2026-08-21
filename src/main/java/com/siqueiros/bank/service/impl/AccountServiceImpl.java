@@ -11,10 +11,8 @@ import com.siqueiros.bank.repositories.TypeAccountRepository;
 import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.AccountService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -65,7 +63,7 @@ public class AccountServiceImpl implements AccountService
             throw new InsufficientFundsException("La cuenta no puede crearse con saldo negativo. Saldo actual: $ " +  accountRequestDTO.balance());
         }
 
-        Account newAccount = new Account(accountRequestDTO.balance(), typeAccount, user, LocalDateTime.now());
+        Account newAccount = new Account(accountRequestDTO.balance(), typeAccount, user);
         var accountSaved = accountRepository.save(newAccount);
         return mapToResponse(accountSaved);
     }

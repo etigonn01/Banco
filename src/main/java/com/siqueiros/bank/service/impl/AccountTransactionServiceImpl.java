@@ -42,13 +42,22 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
     }
 
     @Override
+    public List<AccountTransactionResponseDTO> getAllAccountTransactions() {
+        var accountTransactions = transactionRepository.findAll();
+        return accountTransactions
+                .stream()
+                .map(this.transactionMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO request) {
-        Account account = accountRepository.findByIdWithLock(request.accountId())
-                .orElseThrow(() ->  EntityNotFoundException.of("Cuenta", request.accountId()));
+        Account account = accountRepository.findByIdWithRowLevelLocking(request.accountId())
+                .orElseThrow(() ->  EntityNotFoundException.raise("Cuenta", request.accountId()));
 
         TypeOperation typeOperation = typeOperationRepository.findById(request.typeOperationId())
-                .orElseThrow(() -> EntityNotFoundException.of("Tipo de cuenta", request.typeOperationId()));
+                .orElseThrow(() -> EntityNotFoundException.raise("Tipo de cuenta", request.typeOperationId()));
 
         OperationStrategy strategy = strategyFactory.getStrategy(typeOperation.getName());
         strategy.execute(account, request.amount());
@@ -62,13 +71,7 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
     public List<AccountTransactionResponseDTO> findByAccountId(Long accountId) {
         List<AccountTransaction> transactions = transactionRepository.findByAccountId(accountId);
         return transactions.stream()
-                .map(t -> new AccountTransactionResponseDTO(
-                        t.getId(),
-                        t.getTypeOperation().getName(),
-                        t.getAccount().getUser().getFullName(),
-                        t.getAmount(),
-                        t.getTransactionDateTime()
-                ))
+                .map(this.transactionMapper::toResponseDTO)
                 .toList();
     }
 }

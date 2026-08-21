@@ -38,7 +38,7 @@ public class TypeAccountController {
     }
 
     @GetMapping("/search/{id}")
-    public TypeAccountResponseDTO searchTypeAccount(@PathVariable Long id){
+    public TypeAccountResponseDTO getTypeAccountById(@PathVariable Long id){
         return typeAccountService.getTypeAccountById(id);
     }
 }

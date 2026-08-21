@@ -15,5 +15,5 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
     boolean existsByUserIdAndTypeAccountId(Long userId, Long typeAccountId);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.id = :id")
-    Optional<Account> findByIdWithLock(@Param("id") Long id);
+    Optional<Account> findByIdWithRowLevelLocking(@Param("id") Long id);
 }

@@ -2,8 +2,10 @@ package com.siqueiros.bank.service.impl;
 
 import com.siqueiros.bank.dto.AccountTransactionRequestDTO;
 import com.siqueiros.bank.dto.AccountTransactionResponseDTO;
+import com.siqueiros.bank.enums.OperationStrategy;
+import com.siqueiros.bank.enums.OperationStrategyFactory;
 import com.siqueiros.bank.exception.EntityNotFoundException;
-import com.siqueiros.bank.exception.InsufficientFundsException;
+import com.siqueiros.bank.mappers.AccountTransactionMapper;
 import com.siqueiros.bank.model.Account;
 import com.siqueiros.bank.model.AccountTransaction;
 import com.siqueiros.bank.model.TypeOperation;
@@ -22,53 +24,37 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
     private final AccountRepository accountRepository;
     private final TypeOperationRepository typeOperationRepository;
 
+    private final OperationStrategyFactory strategyFactory;
+    private final AccountTransactionMapper transactionMapper;
+
     public AccountTransactionServiceImpl(
             AccountTransactionRepository transactionRepository,
             AccountRepository accountRepository,
-            TypeOperationRepository typeOperationRepository
+            TypeOperationRepository typeOperationRepository,
+            OperationStrategyFactory strategyFactory,
+            AccountTransactionMapper transactionMapper
     ) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.typeOperationRepository = typeOperationRepository;
+        this.strategyFactory = strategyFactory;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
     @Transactional
-    public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO dto) {
-        Account account = accountRepository.findById(dto.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada con Id: " + dto.accountId()));
+    public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO request) {
+        Account account = accountRepository.findByIdWithLock(request.accountId())
+                .orElseThrow(() ->  EntityNotFoundException.of("Cuenta", request.accountId()));
 
-        TypeOperation typeOperation = typeOperationRepository.findById(dto.typeOperationId())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de operación no encontrada con Id: " + dto.typeOperationId()));
+        TypeOperation typeOperation = typeOperationRepository.findById(request.typeOperationId())
+                .orElseThrow(() -> EntityNotFoundException.of("Tipo de cuenta", request.typeOperationId()));
 
+        OperationStrategy strategy = strategyFactory.getStrategy(typeOperation.getName());
+        strategy.execute(account, request.amount());
 
-        if("Retiro".equalsIgnoreCase(typeOperation.getName())) {
-            if(account.getBalance().compareTo(dto.amount()) < 0) {
-                throw new InsufficientFundsException("Fondos insuficientes para realizar el retiro.");
-            }
-            account.setBalance(account.getBalance().subtract(dto.amount()));
-        } else if ("Deposito".equalsIgnoreCase(typeOperation.getName())) {
-            account.setBalance(account.getBalance().add(dto.amount()));
-        } else {
-            throw new RuntimeException("Operación no disponible.");
-        }
-
-        AccountTransaction transaction = new AccountTransaction(
-                typeOperation,
-                account,
-                dto.amount()
-        );
-
-        accountRepository.save(account);
-        AccountTransaction savedTransaction = transactionRepository.save(transaction);
-
-        return new AccountTransactionResponseDTO(
-                savedTransaction.getId(),
-                savedTransaction.getTypeOperation().getName(),
-                savedTransaction.getAccount().getUser().getFullName(),
-                savedTransaction.getAmount(),
-                savedTransaction.getTransactionDateTime()
-        );
+        AccountTransaction savedTransaction = transactionRepository.save(new AccountTransaction(typeOperation, account, request.amount()));
+        return transactionMapper.toResponseDTO(savedTransaction);
     }
 
     @Override

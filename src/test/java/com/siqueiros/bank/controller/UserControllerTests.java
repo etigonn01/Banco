@@ -47,7 +47,7 @@ public class UserControllerTests {
         @DisplayName("Successfully scenarios")
         class SuccessfullyScenarios {
             @Test
-            @DisplayName("Should return a list of users with 200 OK status when there are users")
+            @DisplayName("Should return a list raise users with 200 OK status when there are users")
             void getAllUsers_ShouldReturnAListOfUsersWith200OKStatusWhenThereAreUsers() throws Exception {
                 UserResponseDTO user1 = new UserResponseDTO(
                         1L,

@@ -138,4 +138,18 @@ public class GlobalExceptionHandler {
         );
         return  new ResponseEntity<>(errorBody, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(AmountIsLessThanOrEqualToZero.class)
+    public ResponseEntity<ErrorResponseDTO> handleAmountIsLessThanOrEqualToZero(AmountIsLessThanOrEqualToZero ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.CONFLICT);
+    }
 }

@@ -1,12 +1,15 @@
 package com.siqueiros.bank.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "accounts")
+@EntityListeners(AuditingEntityListener.class)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,15 +26,15 @@ public class Account {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public Account() {}
-    public Account(BigDecimal balance, TypeAccount typeAccount, User user,  LocalDateTime createdAt) {
+    public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
         this.balance = balance;
         this.typeAccount = typeAccount;
         this.user = user;
-        this.createdAt = createdAt;
     }
 
     public Long getId() {

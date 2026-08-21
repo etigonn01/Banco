@@ -1,7 +1,10 @@
 package com.siqueiros.bank.enums;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
+@Component
 public class OperationStrategyFactory {
     private final List<OperationStrategy> strategies;
 

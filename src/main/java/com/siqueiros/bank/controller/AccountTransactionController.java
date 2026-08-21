@@ -23,7 +23,14 @@ public class AccountTransactionController {
     }
 
     @GetMapping("/{accountId}")
+    @ResponseStatus(HttpStatus.OK)
     public List<AccountTransactionResponseDTO> getAllTransactionsByAccountId(@PathVariable Long accountId) {
         return accountTransactionService.findByAccountId(accountId);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<AccountTransactionResponseDTO> getAllTransaction() {
+        return this.accountTransactionService.getAllAccountTransactions();
     }
 }

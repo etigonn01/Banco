@@ -1,29 +1,32 @@
 package com.siqueiros.bank.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
+@EntityListeners(EntityListeners.class)
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "src_account", referencedColumnName = "id",nullable = false)
     private Account sourceAccount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "dest_account", referencedColumnName = "id", nullable = false)
     private Account destinationAccount;
 
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")
     private BigDecimal amount;
 
-    @Column(name = "transaction_date", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    @Column(name = "transaction_date", nullable = false,  updatable = false)
     private LocalDateTime transactionDateTime;
 
     public Transaction() {}
@@ -31,7 +34,14 @@ public class Transaction {
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
         this.amount = amount;
-        this.transactionDateTime = LocalDateTime.now();
+    }
+
+    public String getSourceAccountFullName() {
+        return this.sourceAccount.getUser().getFullName();
+    }
+
+    public String getDestinationAccountFullName() {
+        return this.destinationAccount.getUser().getFullName();
     }
 
     public Long getId() {

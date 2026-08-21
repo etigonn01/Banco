@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface TransactionService {
     List<TransactionResponseDTO> getAllTransaction();
-    List<TransactionResponseDTO> getAllTransactionByAccountId(Long accountId);
+    List<TransactionResponseDTO> getTransactionsByAccountId(Long accountId);
     TransactionResponseDTO registerTransaction(TransactionRequestDTO request);
-    TransactionResponseDTO updateTransaction(Long transactionId, TransactionRequestDTO request);
-    TransactionResponseDTO deleteTransaction(Long transactionId);
 }

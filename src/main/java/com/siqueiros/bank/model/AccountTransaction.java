@@ -1,12 +1,15 @@
 package com.siqueiros.bank.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "account_transactions")
+@EntityListeners(AuditingEntityListener.class)
 public class AccountTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,14 +19,15 @@ public class AccountTransaction {
     @JoinColumn(name = "type_operation_id", referencedColumnName = "id", nullable = false)
     private TypeOperation typeOperation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_id", referencedColumnName = "id",nullable = false)
     private Account account;
 
     @Column(name = "amount", nullable = false, columnDefinition = "NUMERIC(12,2)")
     private BigDecimal amount = BigDecimal.ZERO;
 
-    @Column(name = "transaction_datetime", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    @Column(name = "transaction_datetime", nullable = false, updatable = false)
     private LocalDateTime transactionDateTime;
 
     public AccountTransaction(){}
@@ -31,7 +35,17 @@ public class AccountTransaction {
         this.typeOperation = typeOperation;
         this.account = account;
         this.amount = amount;
-        this.transactionDateTime = LocalDateTime.now();
+    }
+
+    public String getTypeOperationName() {
+        return this.typeOperation != null ? this.typeOperation.getName() : null;
+    }
+
+    public String getUserFullName() {
+        if (this.account != null && this.account.getUser() != null) {
+            return this.account.getUser().getFullName();
+        }
+        return "Usuario desconocido";
     }
 
     public Long getId() {

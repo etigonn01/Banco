@@ -1,10 +1,16 @@
 package com.siqueiros.bank.service;
 
+import com.siqueiros.bank.dto.AccountRequestDTO;
 import com.siqueiros.bank.dto.AccountResponseDTO;
+import com.siqueiros.bank.exception.DuplicatedAccountException;
 import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.mappers.AccountMapper;
 import com.siqueiros.bank.model.Account;
+import com.siqueiros.bank.model.TypeAccount;
+import com.siqueiros.bank.model.User;
 import com.siqueiros.bank.repositories.AccountRepository;
+import com.siqueiros.bank.repositories.TypeAccountRepository;
+import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +31,12 @@ import static org.mockito.Mockito.*;
 public class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private TypeAccountRepository typeAccountRepository;
 
     @Mock
     private AccountMapper accountMapper;
@@ -131,5 +143,84 @@ public class AccountServiceTest {
 
         verify(accountRepository, times(1)).findByIdWithRelations(accountId);
         verifyNoMoreInteractions(accountRepository);
+    }
+
+    @Test
+    @DisplayName("Should create an account successfully when all validations are correct")
+    void createAccount_ShouldCreateAccountSuccessfullyWhenAllValidationsAreCorrect() {
+        // preparación
+        AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 1L, 2L);
+        User mockUser = new  User();
+        TypeAccount mockTypeAccount = new  TypeAccount();
+
+        Account mockSavecAccount = new  Account(request.balance(), mockTypeAccount, mockUser);
+        AccountResponseDTO expectedDTO = new AccountResponseDTO(
+                5L, request.balance(), "nomina", "Manuel Molina", LocalDateTime.now()
+        );
+
+        // configuración de comportamiento
+        when(accountRepository.existsByUserIdAndTypeAccountId(2L, 1L)).thenReturn(false);
+        when(userRepository.findById(2L)).thenReturn(Optional.of(mockUser));
+        when(typeAccountRepository.findById(1L)).thenReturn(Optional.of(mockTypeAccount));
+        when(accountRepository.save(any(Account.class))).thenReturn(mockSavecAccount);
+        when(accountMapper.toResponse(mockSavecAccount)).thenReturn(expectedDTO);
+
+        // acción
+        AccountResponseDTO result = accountService.createAccount(request);
+
+        // verificaciones
+        assertNotNull(result);
+        assertEquals(5L, result.id());
+        assertEquals(request.balance(), result.balance());
+
+        verify(accountRepository, times(1)).save(any(Account.class));
+        verify(accountMapper, times(1)).toResponse(mockSavecAccount);
+    }
+
+    @Test
+    @DisplayName("Should throw DuplicatedAccountException if the user already has a account of this type")
+    void createAccount_ShouldThrowDuplicatedAccountExceptionIfTheUserAlreadyHasAnAccountOfTheType() {
+        // preparación
+        AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 1L, 2L);
+
+        // configuración de comportamiento
+        when(accountRepository.existsByUserIdAndTypeAccountId(2L, 1L)).thenReturn(true);
+
+        // acción
+        assertThrows(DuplicatedAccountException.class, () -> accountService.createAccount(request));
+
+        // verificación
+        verify(accountRepository, never()).save(any());
+        verifyNoMoreInteractions(userRepository, typeAccountRepository, accountRepository);
+    }
+
+    @Test
+    @DisplayName("Should throw EntityNotFoundException if the user does not exists")
+    void  createAccount_ShouldThrowEntityNotFoundExceptionIfTheUserDoesNotExists() {
+        AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 2L, 1L);
+
+        when(accountRepository.existsByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> accountService.createAccount(request));
+
+        verify(typeAccountRepository, never()).findById(anyLong());
+        verify(accountRepository, never()).save(any());
+        verifyNoMoreInteractions(accountMapper);
+    }
+
+    @Test
+    @DisplayName("Should throw EntityNotFoundException if the type account does not exists")
+    void createAccount_ShouldThrowEntityNotFoundExceptionIfTheTypeAccountDoesNotExists() {
+        AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 2L, 1L);
+        User mockUser = new  User();
+
+        when(accountRepository.existsByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(typeAccountRepository.findById(2L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> accountService.createAccount(request));
+
+        verify(accountRepository, never()).save(any());
     }
 }

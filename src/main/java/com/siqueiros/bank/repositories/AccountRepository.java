@@ -16,6 +16,9 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
     @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount")
     List<Account> findAllWithRelations();
 
+    @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount WHERE a.id = :accountId")
+    Optional<Account> findByIdWithRelations(@Param("accountId") Long accountId);
+
     boolean existsByUserIdAndTypeAccountId(Long userId, Long typeAccountId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

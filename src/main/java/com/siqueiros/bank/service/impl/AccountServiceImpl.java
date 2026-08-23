@@ -46,9 +46,9 @@ public class AccountServiceImpl implements AccountService
 
     @Override
     public AccountResponseDTO findByAccountId(Long accountId) {
-        return accountRepository.findById(accountId)
-                .map(this::mapToResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada. Id: " + accountId));
+        return accountRepository.findByIdWithRelations(accountId)
+                .map(accountMapper::toResponse)
+                .orElseThrow(() -> EntityNotFoundException.of("Cuenta",  accountId));
     }
 
     @Override

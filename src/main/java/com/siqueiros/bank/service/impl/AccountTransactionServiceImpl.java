@@ -54,10 +54,10 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
     @Transactional
     public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO request) {
         Account account = accountRepository.findByIdWithRowLevelLocking(request.accountId())
-                .orElseThrow(() ->  EntityNotFoundException.raise("Cuenta", request.accountId()));
+                .orElseThrow(() ->  EntityNotFoundException.of("Cuenta", request.accountId()));
 
         TypeOperation typeOperation = typeOperationRepository.findById(request.typeOperationId())
-                .orElseThrow(() -> EntityNotFoundException.raise("Tipo de cuenta", request.typeOperationId()));
+                .orElseThrow(() -> EntityNotFoundException.of("Tipo de cuenta", request.typeOperationId()));
 
         OperationStrategy strategy = strategyFactory.getStrategy(typeOperation.getName());
         strategy.execute(account, request.amount());

@@ -4,7 +4,6 @@ import com.siqueiros.bank.dto.AccountRequestDTO;
 import com.siqueiros.bank.dto.AccountResponseDTO;
 import com.siqueiros.bank.exception.DuplicatedAccountException;
 import com.siqueiros.bank.exception.EntityNotFoundException;
-import com.siqueiros.bank.exception.InsufficientFundsException;
 import com.siqueiros.bank.mappers.AccountMapper;
 import com.siqueiros.bank.model.Account;
 import com.siqueiros.bank.repositories.AccountRepository;
@@ -13,7 +12,6 @@ import com.siqueiros.bank.repositories.UserRepository;
 import com.siqueiros.bank.service.AccountService;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -53,24 +51,22 @@ public class AccountServiceImpl implements AccountService
 
     @Override
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
+        boolean isDuplicatedAccount = accountRepository
+                .existsByUserIdAndTypeAccountId(accountRequestDTO.userId(), accountRequestDTO.typeAccountId());
+
+        if (isDuplicatedAccount) {
+            throw DuplicatedAccountException.of(accountRequestDTO.userId());
+        }
+
         var user = userRepository.findById(accountRequestDTO.userId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado. Id: " +  accountRequestDTO.userId()));
+                .orElseThrow(() -> EntityNotFoundException.of("Usuario", accountRequestDTO.userId()));
 
         var typeAccount = typeAccountRepository.findById(accountRequestDTO.typeAccountId())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de cuenta no encontrada. Id: " + accountRequestDTO.typeAccountId()));
-
-        boolean isDuplicatedAccount = accountRepository.existsByUserIdAndTypeAccountId(accountRequestDTO.userId(), accountRequestDTO.typeAccountId());
-        if (isDuplicatedAccount) {
-            throw new DuplicatedAccountException("El usuario ya tiene registrada una cuenta de este tipo. Solo se permite un tipo de cuenta por usuario");
-        }
-
-        if (accountRequestDTO.balance().compareTo(BigDecimal.ZERO) < 0) {
-            throw new InsufficientFundsException("La cuenta no puede crearse con saldo negativo. Saldo actual: $ " +  accountRequestDTO.balance());
-        }
+                .orElseThrow(() -> EntityNotFoundException.of("Tipo de cuenta", accountRequestDTO.typeAccountId()));
 
         Account newAccount = new Account(accountRequestDTO.balance(), typeAccount, user);
         var accountSaved = accountRepository.save(newAccount);
-        return mapToResponse(accountSaved);
+        return accountMapper.toResponse(accountSaved);
     }
 
     @Override

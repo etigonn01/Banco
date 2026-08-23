@@ -5,6 +5,7 @@ import com.siqueiros.bank.dto.AccountResponseDTO;
 import com.siqueiros.bank.exception.DuplicatedAccountException;
 import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.exception.InsufficientFundsException;
+import com.siqueiros.bank.mappers.AccountMapper;
 import com.siqueiros.bank.model.Account;
 import com.siqueiros.bank.repositories.AccountRepository;
 import com.siqueiros.bank.repositories.TypeAccountRepository;
@@ -21,21 +22,25 @@ public class AccountServiceImpl implements AccountService
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final TypeAccountRepository typeAccountRepository;
+    private final AccountMapper accountMapper;
 
     public AccountServiceImpl(
             AccountRepository accountRepository,
             UserRepository userRepository,
-            TypeAccountRepository typeAccountRepository)
+            TypeAccountRepository typeAccountRepository,
+            AccountMapper accountMapper)
     {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.typeAccountRepository = typeAccountRepository;
+        this.accountMapper = accountMapper;
     }
 
     @Override
     public List<AccountResponseDTO> findAllAccounts() {
-        return accountRepository.findAll().stream()
-                .map(this::mapToResponse)
+        return accountRepository.findAllWithRelations()
+                .stream()
+                .map(accountMapper::toResponse)
                 .toList();
     }
 

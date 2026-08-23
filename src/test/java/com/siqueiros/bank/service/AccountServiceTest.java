@@ -1,6 +1,7 @@
 package com.siqueiros.bank.service;
 
 import com.siqueiros.bank.dto.AccountResponseDTO;
+import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.mappers.AccountMapper;
 import com.siqueiros.bank.model.Account;
 import com.siqueiros.bank.repositories.AccountRepository;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -86,5 +88,48 @@ public class AccountServiceTest {
 
         verify(accountRepository, times(1)).findAllWithRelations();
         verify(accountMapper, never()).toResponse(any(Account.class));
+    }
+
+    @Test
+    @DisplayName("Should return AccountResponseDTO when the account exists by Id")
+    void findAccountById_ShouldReturnAccountResponseDTOWhenTheAccountExists() {
+        // preparación
+        long accountId = 1L;
+        Account mockAccount = new Account();
+        mockAccount.setId(accountId);
+
+        AccountResponseDTO expectedDTO = new AccountResponseDTO(
+                accountId, new BigDecimal("500"), "nomina", "Manuel Molina", LocalDateTime.now()
+        );
+
+        // configuración de la respuesta
+        when(accountRepository.findByIdWithRelations(accountId)).thenReturn(Optional.of(mockAccount));
+        when(accountMapper.toResponse(mockAccount)).thenReturn(expectedDTO);
+
+        // acción
+        AccountResponseDTO result = accountService.findByAccountId(accountId);
+
+        // verificación
+        assertNotNull(result);
+        assertEquals(accountId, result.id());
+        assertEquals("Manuel Molina", result.accountHolder());
+
+        verify(accountRepository, times(1)).findByIdWithRelations(accountId);
+        verify(accountMapper, times(1)).toResponse(mockAccount);
+    }
+
+    @Test
+    @DisplayName("Should throw EntityNotFoundException when the account does not exists")
+    void findAccountById_ShouldThrowEntityNotFoundExceptionWhenTheAccountDoesNotExists() {
+        long accountId = 99L;
+
+        when(accountRepository.findByIdWithRelations(accountId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> accountService.findByAccountId(accountId));
+
+        assertEquals("No se encontró el recurso 'Cuenta' con ID: 99", ex.getMessage());
+
+        verify(accountRepository, times(1)).findByIdWithRelations(accountId);
+        verifyNoMoreInteractions(accountRepository);
     }
 }

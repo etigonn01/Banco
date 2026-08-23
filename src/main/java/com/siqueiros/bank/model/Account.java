@@ -1,5 +1,6 @@
 package com.siqueiros.bank.model;
 
+import com.siqueiros.bank.exception.InsufficientFundsException;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,6 +33,9 @@ public class Account {
 
     public Account() {}
     public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
+        if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
+            throw InsufficientFundsException.of(String.format(String.valueOf(balance)));
+        }
         this.balance = balance;
         this.typeAccount = typeAccount;
         this.user = user;

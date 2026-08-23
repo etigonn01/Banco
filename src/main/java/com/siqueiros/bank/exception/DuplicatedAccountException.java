@@ -7,7 +7,7 @@ public class DuplicatedAccountException extends RuntimeException {
 
     public static DuplicatedAccountException of(long id) {
         return new DuplicatedAccountException(
-                String.format("La cuenta de origen con Id %d es la misma que la cuenta de destino. Esta opreación no está permitida", id)
+                String.format("El usuario con Id: %d ya tiene registrada una cuenta de este tipo", id)
         );
     }
 }

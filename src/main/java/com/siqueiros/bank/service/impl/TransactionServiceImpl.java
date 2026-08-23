@@ -53,10 +53,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionResponseDTO registerTransaction(TransactionRequestDTO request) {
         var sourceAccount = accountRepository.findByIdWithRowLevelLocking(request.sourceAccountId())
-                .orElseThrow(() -> EntityNotFoundException.raise("Cuenta de origen",  request.sourceAccountId()));
+                .orElseThrow(() -> EntityNotFoundException.of("Cuenta de origen",  request.sourceAccountId()));
 
         var destinationAccount = accountRepository.findByIdWithRowLevelLocking(request.destinationAccountId())
-                .orElseThrow(() -> EntityNotFoundException.raise("Cuenta de destino",  request.destinationAccountId()));
+                .orElseThrow(() -> EntityNotFoundException.of("Cuenta de destino",  request.destinationAccountId()));
 
         strategy.execute(sourceAccount, destinationAccount, request.amount());
         var transaction = new Transaction(sourceAccount, destinationAccount, request.amount());

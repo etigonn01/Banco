@@ -4,7 +4,6 @@ import com.siqueiros.bank.exception.AmountIsLessThanOrEqualToZero;
 import com.siqueiros.bank.exception.DuplicatedAccountException;
 import com.siqueiros.bank.exception.InsufficientFundsException;
 import com.siqueiros.bank.model.Account;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ public class TransferenciaTransactionStrategy implements TransactionStrategy {
     @Override
     public void execute(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
         if (sourceAccount.getId().equals(destinationAccount.getId())) {
-            throw DuplicatedAccountException.raise(sourceAccount.getId());
+            throw DuplicatedAccountException.of(sourceAccount.getId());
         }
 
         if (amount.compareTo(BigDecimal.ZERO) < 1) {

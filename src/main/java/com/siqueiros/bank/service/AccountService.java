@@ -9,5 +9,5 @@ public interface AccountService {
     List<AccountResponseDTO> findAllActiveAccounts();
     AccountResponseDTO findActiveAccountById(Long accountId);
     AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO);
-    AccountResponseDTO deleteAccount(Long accountId);
+    void logicalDelete(Long accountId);
 }

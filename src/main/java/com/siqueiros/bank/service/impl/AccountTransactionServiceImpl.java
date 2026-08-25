@@ -53,7 +53,7 @@ public class AccountTransactionServiceImpl implements AccountTransactionService 
     @Override
     @Transactional
     public AccountTransactionResponseDTO createTransaction(AccountTransactionRequestDTO request) {
-        Account account = accountRepository.findByIdWithRowLevelLocking(request.accountId())
+        Account account = accountRepository.findActiveByIdWithRowLevelLocking(request.accountId())
                 .orElseThrow(() ->  EntityNotFoundException.of("Cuenta", request.accountId()));
 
         TypeOperation typeOperation = typeOperationRepository.findById(request.typeOperationId())

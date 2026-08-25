@@ -31,12 +31,12 @@ public class AccountController {
     }
 
     @DeleteMapping("/{accountId}")
-    @ResponseStatus(HttpStatus.OK)
-    public AccountResponseDTO logicalDelete(@PathVariable Long accountId){
-        return accountService.deleteAccount(accountId);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logicalDelete(@PathVariable Long accountId){
+        accountService.logicalDelete(accountId);
     }
 
-    @GetMapping("/search/{accountId}")
+    @GetMapping("/{accountId}")
     @ResponseStatus(HttpStatus.OK)
     public AccountResponseDTO getActiveById(@PathVariable Long accountId){
         return accountService.findActiveAccountById(accountId);

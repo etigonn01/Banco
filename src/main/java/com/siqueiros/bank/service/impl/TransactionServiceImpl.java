@@ -52,10 +52,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO registerTransaction(TransactionRequestDTO request) {
-        var sourceAccount = accountRepository.findByIdWithRowLevelLocking(request.sourceAccountId())
+        var sourceAccount = accountRepository.findActiveByIdWithRowLevelLocking(request.sourceAccountId())
                 .orElseThrow(() -> EntityNotFoundException.of("Cuenta de origen",  request.sourceAccountId()));
 
-        var destinationAccount = accountRepository.findByIdWithRowLevelLocking(request.destinationAccountId())
+        var destinationAccount = accountRepository.findActiveByIdWithRowLevelLocking(request.destinationAccountId())
                 .orElseThrow(() -> EntityNotFoundException.of("Cuenta de destino",  request.destinationAccountId()));
 
         strategy.execute(sourceAccount, destinationAccount, request.amount());

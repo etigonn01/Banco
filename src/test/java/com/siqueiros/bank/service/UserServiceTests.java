@@ -165,7 +165,7 @@ public class UserServiceTests {
         @DisplayName("Successfully scenarios")
         class SuccessfullyScenarios{
             @Test
-            @DisplayName("Should delete the user and return a DTO when the Id exists")
+            @DisplayName("Should logicalDelete the user and return a DTO when the Id exists")
             void deleteUser_ShouldDeleteTheDTOAndReturnTheDTOWithAndID() {
                 long userId = 1L;
                 var mockUser = new User(userId, "Norma Guzman", "guzman.norma@hotmail.com", "password1234", "3432637282", LocalDateTime.now());
@@ -188,7 +188,7 @@ public class UserServiceTests {
         @DisplayName("Error scenarios")
         class ErrorScenarios{
             @Test
-            @DisplayName("Should throw EntityNotFoundException and do not attempt to delete if the id does not exists")
+            @DisplayName("Should throw EntityNotFoundException and do not attempt to logicalDelete if the id does not exists")
             void deleteUser_ShouldThrowEntityNotFoundExceptionAndDoNotAttemptToDeleteIfIdDoesNotExist() {
                 long userId = 1L;
                 String  expectedMessage = "Usuario no encontrado. Id: " + userId;

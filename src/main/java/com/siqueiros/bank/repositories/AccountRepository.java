@@ -13,15 +13,18 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long>{
-    @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount")
-    List<Account> findAllWithRelations();
+    @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount " +
+            "WHERE a.deletedAt IS NULL")
+    List<Account> findAllActiveWithRelations();
 
-    @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount WHERE a.id = :accountId")
-    Optional<Account> findByIdWithRelations(@Param("accountId") Long accountId);
+    @Query("SELECT a FROM Account a JOIN FETCH a.user JOIN FETCH a.typeAccount " +
+            "WHERE a.id = :accountId AND a.deletedAt IS NULL")
+    Optional<Account> findActiveByIdWithRelations(@Param("accountId") Long accountId);
 
-    boolean existsByUserIdAndTypeAccountId(Long userId, Long typeAccountId);
+    boolean existsActiveByUserIdAndTypeAccountId(Long userId, Long typeAccountId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM Account a WHERE a.id = :id")
-    Optional<Account> findByIdWithRowLevelLocking(@Param("id") Long id);
+    @Query("SELECT a FROM Account a " +
+            "WHERE a.id = :id AND a.deletedAt IS NULL")
+    Optional<Account> findActiveByIdWithRowLevelLocking(@Param("id") Long id);
 }

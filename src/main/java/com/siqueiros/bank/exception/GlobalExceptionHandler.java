@@ -151,4 +151,18 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorBody, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AccountWithBalanceException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccountWithBalance(AccountWithBalanceException ex, WebRequest request) {
+        String cleanPath = request.getDescription(false).replace("uri=", "");
+
+        ErrorResponseDTO errorBody = new ErrorResponseDTO(
+                cleanPath,
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorBody, HttpStatus.BAD_REQUEST);
+    }
 }

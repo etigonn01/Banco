@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService
     }
 
     /**
-     * Devuelve todas las cuentas bancarias activas del la base de datos
+     * Devuelve todas las cuentas bancarias activas la base de datos
      * @return Una lista {@link List} de tipo {@link AccountResponseDTO} con los registros activos en la base de datos
      */
     @Override
@@ -48,8 +48,8 @@ public class AccountServiceImpl implements AccountService
     }
 
     /**
-     * Devuelve la cuenta bancaria activa con el Id
-     * @param accountId ID de la cuenta que se busca en la base de datos
+     * Devuelve la cuenta bancaria activa con Id
+     * @param accountId de la cuenta que se busca en la base de datos
      * @return Un objeto {@link AccountResponseDTO} con la información del registro activo encontrado
      * @throws EntityNotFoundException Si el accountId no corresponde a ninguna cuenta en la base de datos
      */
@@ -90,16 +90,14 @@ public class AccountServiceImpl implements AccountService
 
     /**
      * Elimina de manera lógica una cuenta bancaria de la base de datos
-     * @param accountId ID de la cuenta que se desea eliminar de la base de datos
-     * @return Un objeto {@link AccountResponseDTO} con la información de la cuenta bancaria eliminada
+     *
      * @throws EntityNotFoundException Si el accountId no corresponde a ninguna cuenta bancaria en la base de datos
      */
     @Override
-    public AccountResponseDTO deleteAccount(Long accountId) {
+    public void logicalDelete(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> EntityNotFoundException.of("Cuenta", accountId));
         account.close();
         accountRepository.save(account);
-        return accountMapper.toResponse(account);
     }
 }

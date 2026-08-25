@@ -1,6 +1,8 @@
 package com.siqueiros.bank.model;
 
-import com.siqueiros.bank.exception.InsufficientFundsException;
+import com.siqueiros.bank.exception.AccountAlreadyDeletedException;
+import com.siqueiros.bank.exception.AccountWithBalanceException;
+import com.siqueiros.bank.exception.NegativeInitialBalanceException;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -31,14 +33,29 @@ public class Account {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "deleted_at", columnDefinition = "TIMESTAMP", updatable = false)
+    private LocalDateTime deletedAt;
+
     public Account() {}
     public Account(BigDecimal balance, TypeAccount typeAccount, User user) {
         if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
-            throw InsufficientFundsException.of(String.format(String.valueOf(balance)));
+            throw NegativeInitialBalanceException.of(String.format(String.valueOf(balance)));
         }
         this.balance = balance;
         this.typeAccount = typeAccount;
         this.user = user;
+    }
+
+    public void close() {
+        if( this.deletedAt != null ) {
+            throw AccountAlreadyDeletedException.of(this.id);
+        }
+
+        if (this.balance.compareTo(BigDecimal.ZERO) > 0) {
+            throw AccountWithBalanceException.of(this.id);
+        }
+
+        this.deletedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -71,4 +88,7 @@ public class Account {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+    public LocalDateTime getDeletedAt() { return this.deletedAt; }
+    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+
 }

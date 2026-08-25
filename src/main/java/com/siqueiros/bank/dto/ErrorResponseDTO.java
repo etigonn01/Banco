@@ -8,6 +8,5 @@ public record ErrorResponseDTO(
         int status,
         String error,
         String message,
-        LocalDateTime timestamp,
-        Map<String, String> validations
+        LocalDateTime timestamp
 ) {}

@@ -20,31 +20,25 @@ public class AccountController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<AccountResponseDTO> findAll(){
-        return accountService.findAllAccounts();
+    public List<AccountResponseDTO> findAllActive(){
+        return accountService.findAllActiveAccounts();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponseDTO save(@Valid @RequestBody AccountRequestDTO accountRequestDTO){
-        return accountService.createAccount(accountRequestDTO);
-    }
-
-    @PutMapping("/{accountId}")
-    @ResponseStatus(HttpStatus.OK)
-    public AccountResponseDTO update(@PathVariable Long accountId, @RequestBody AccountRequestDTO request){
-        return accountService.updateAccount(accountId, request.typeAccountId());
+    public AccountResponseDTO save(@Valid @RequestBody AccountRequestDTO request){
+        return accountService.createAccount(request);
     }
 
     @DeleteMapping("/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public AccountResponseDTO delete(@PathVariable Long accountId){
+    public AccountResponseDTO logicalDelete(@PathVariable Long accountId){
         return accountService.deleteAccount(accountId);
     }
 
     @GetMapping("/search/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public AccountResponseDTO getById(@PathVariable Long accountId){
-        return accountService.findByAccountId(accountId);
+    public AccountResponseDTO getActiveById(@PathVariable Long accountId){
+        return accountService.findActiveAccountById(accountId);
     }
 }

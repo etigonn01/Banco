@@ -2,7 +2,7 @@ package com.siqueiros.bank.service;
 
 import com.siqueiros.bank.dto.AccountRequestDTO;
 import com.siqueiros.bank.dto.AccountResponseDTO;
-import com.siqueiros.bank.exception.DuplicatedAccountException;
+import com.siqueiros.bank.exception.AccountAlreadyExistsException;
 import com.siqueiros.bank.exception.EntityNotFoundException;
 import com.siqueiros.bank.mappers.AccountMapper;
 import com.siqueiros.bank.model.Account;
@@ -69,19 +69,19 @@ public class AccountServiceTest {
         );
 
         // configuración de Mocks (Comportamiento esperado)
-        when(accountRepository.findAllWithRelations()).thenReturn(mockAccounts);
+        when(accountRepository.findAllActiveWithRelations()).thenReturn(mockAccounts);
         when(accountMapper.toResponse(account1)).thenReturn(dto1);
         when(accountMapper.toResponse(account2)).thenReturn(dto2);
 
         // acción
-        List<AccountResponseDTO> result = accountService.findAllAccounts();
+        List<AccountResponseDTO> result = accountService.findAllActiveAccounts();
 
         // verificación
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("ahorro", dto2.typeAccountName());
 
-        verify(accountRepository, times(1)).findAllWithRelations();
+        verify(accountRepository, times(1)).findAllActiveWithRelations();
         verify(accountMapper, times(2)).toResponse(any(Account.class));
     }
 
@@ -89,16 +89,16 @@ public class AccountServiceTest {
     @DisplayName("Should return an empty list when there are no accounts")
     void findAllAccounts_ShouldReturnAnEmptyListWhenThereAreNoAccounts() {
         // preparación
-        when(accountRepository.findAllWithRelations()).thenReturn(List.of());
+        when(accountRepository.findAllActiveWithRelations()).thenReturn(List.of());
 
         // acción
-        List<AccountResponseDTO> result = accountService.findAllAccounts();
+        List<AccountResponseDTO> result = accountService.findAllActiveAccounts();
 
         // verificación
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
-        verify(accountRepository, times(1)).findAllWithRelations();
+        verify(accountRepository, times(1)).findAllActiveWithRelations();
         verify(accountMapper, never()).toResponse(any(Account.class));
     }
 
@@ -115,18 +115,18 @@ public class AccountServiceTest {
         );
 
         // configuración de la respuesta
-        when(accountRepository.findByIdWithRelations(accountId)).thenReturn(Optional.of(mockAccount));
+        when(accountRepository.findActiveByIdWithRelations(accountId)).thenReturn(Optional.of(mockAccount));
         when(accountMapper.toResponse(mockAccount)).thenReturn(expectedDTO);
 
         // acción
-        AccountResponseDTO result = accountService.findByAccountId(accountId);
+        AccountResponseDTO result = accountService.findActiveAccountById(accountId);
 
         // verificación
         assertNotNull(result);
         assertEquals(accountId, result.id());
         assertEquals("Manuel Molina", result.accountHolder());
 
-        verify(accountRepository, times(1)).findByIdWithRelations(accountId);
+        verify(accountRepository, times(1)).findActiveByIdWithRelations(accountId);
         verify(accountMapper, times(1)).toResponse(mockAccount);
     }
 
@@ -135,13 +135,13 @@ public class AccountServiceTest {
     void findAccountById_ShouldThrowEntityNotFoundExceptionWhenTheAccountDoesNotExists() {
         long accountId = 99L;
 
-        when(accountRepository.findByIdWithRelations(accountId)).thenReturn(Optional.empty());
+        when(accountRepository.findActiveByIdWithRelations(accountId)).thenReturn(Optional.empty());
 
-        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> accountService.findByAccountId(accountId));
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> accountService.findActiveAccountById(accountId));
 
         assertEquals("No se encontró el recurso 'Cuenta' con ID: 99", ex.getMessage());
 
-        verify(accountRepository, times(1)).findByIdWithRelations(accountId);
+        verify(accountRepository, times(1)).findActiveByIdWithRelations(accountId);
         verifyNoMoreInteractions(accountRepository);
     }
 
@@ -159,7 +159,7 @@ public class AccountServiceTest {
         );
 
         // configuración de comportamiento
-        when(accountRepository.existsByUserIdAndTypeAccountId(2L, 1L)).thenReturn(false);
+        when(accountRepository.existsActiveByUserIdAndTypeAccountId(2L, 1L)).thenReturn(false);
         when(userRepository.findById(2L)).thenReturn(Optional.of(mockUser));
         when(typeAccountRepository.findById(1L)).thenReturn(Optional.of(mockTypeAccount));
         when(accountRepository.save(any(Account.class))).thenReturn(mockSavecAccount);
@@ -184,10 +184,10 @@ public class AccountServiceTest {
         AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 1L, 2L);
 
         // configuración de comportamiento
-        when(accountRepository.existsByUserIdAndTypeAccountId(2L, 1L)).thenReturn(true);
+        when(accountRepository.existsActiveByUserIdAndTypeAccountId(2L, 1L)).thenReturn(true);
 
         // acción
-        assertThrows(DuplicatedAccountException.class, () -> accountService.createAccount(request));
+        assertThrows(AccountAlreadyExistsException.class, () -> accountService.createAccount(request));
 
         // verificación
         verify(accountRepository, never()).save(any());
@@ -199,7 +199,7 @@ public class AccountServiceTest {
     void  createAccount_ShouldThrowEntityNotFoundExceptionIfTheUserDoesNotExists() {
         AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 2L, 1L);
 
-        when(accountRepository.existsByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
+        when(accountRepository.existsActiveByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> accountService.createAccount(request));
@@ -215,7 +215,7 @@ public class AccountServiceTest {
         AccountRequestDTO request = new AccountRequestDTO(new BigDecimal(500), 2L, 1L);
         User mockUser = new  User();
 
-        when(accountRepository.existsByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
+        when(accountRepository.existsActiveByUserIdAndTypeAccountId(1L, 2L)).thenReturn(false);
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
         when(typeAccountRepository.findById(2L)).thenReturn(Optional.empty());
 

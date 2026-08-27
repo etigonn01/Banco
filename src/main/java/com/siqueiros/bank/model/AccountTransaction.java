@@ -37,6 +37,10 @@ public class AccountTransaction {
         this.amount = amount;
     }
 
+    public static AccountTransaction create(TypeOperation typeOperation, Account account, BigDecimal amount) {
+        return new AccountTransaction(typeOperation, account, amount);
+    }
+
     public String getTypeOperationName() {
         return this.typeOperation != null ? this.typeOperation.getName() : null;
     }

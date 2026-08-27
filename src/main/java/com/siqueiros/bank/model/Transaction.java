@@ -36,6 +36,10 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public static Transaction create(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
+        return new Transaction(sourceAccount, destinationAccount, amount);
+    }
+
     public String getSourceAccountFullName() {
         return this.sourceAccount.getUser().getFullName();
     }
@@ -44,43 +48,30 @@ public class Transaction {
         return this.destinationAccount.getUser().getFullName();
     }
 
-    public Long getId() {
-        return id;
-    }
-
+    public Long getId() { return id; }
     public void setId(Long id) {
         this.id = id;
     }
-
     public Account getSourceAccount() {
         return sourceAccount;
     }
-
     public void setSourceAccount(Account sourceAccount) {
         this.sourceAccount = sourceAccount;
     }
-
     public Account getDestinationAccount() {
         return destinationAccount;
     }
-
     public void setDestinationAccount(Account destinationAccount) {
         this.destinationAccount = destinationAccount;
     }
-
     public BigDecimal getAmount() {
         return amount;
     }
-
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
     public LocalDateTime getTransactionDate() {
         return transactionDateTime;
     }
-
-    public void setTransactionDate(LocalDateTime transactionDateTime) {
-        this.transactionDateTime = transactionDateTime;
-    }
+    public void setTransactionDate(LocalDateTime transactionDateTime) { this.transactionDateTime = transactionDateTime; }
 }
